@@ -1,3 +1,22 @@
-body {
+body, .desktop {
+	height: 100%;
+	width: 100%;
 	background: #ffffff;
+}
+
+.program {
+	position: absolute;
+	width: 400px;
+	height: 300px;
+	z-index: 2;
+	border: solid black 1px;
+}
+
+.programheader{
+	width: 100%;
+	height: 50px;
+	z-index: 3;
+	cursor: move;
+	border: solid black 1px;
+	background-color: cadetblue;
 }

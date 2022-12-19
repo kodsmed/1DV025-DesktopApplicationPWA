@@ -55,7 +55,7 @@ In this assignment, you are required to close issues and tasks ([ ]) that you im
 
 ## Requirements for a higher grade
 
-To qualify for a higher grade, the application must meet additional requirements. 
+To qualify for a higher grade, the application must meet additional requirements.
 
 1. All requirements for a passing grade must be met, #1 to #18.
 2. PWD should be a progressive web application (PWA), #19.

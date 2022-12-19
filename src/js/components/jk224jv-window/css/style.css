@@ -1,0 +1,51 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#window {
+  position: absolute;
+  height: 300px;
+  width: 500px;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+#header {
+  height:25px;
+  width: 100%;
+  background-color: rgb(5, 5, 146);
+  display: grid;
+  grid-template-columns: auto 75px;
+  grid-template-areas: "title icons";
+  border: 1px solid black;
+}
+
+#title {
+  grid-area: "title";
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+#icons {
+  grid-area: "icons";
+  color: white;
+  display: inline;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  align-content: center;
+}
+
+.button-6 {
+  width: 25px;
+  font-weight: 600;
+  margin-right: 5px;
+  margin-top:2px;
+  margin-bottom: 2px;
+}
