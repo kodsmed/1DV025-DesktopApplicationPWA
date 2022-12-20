@@ -6,6 +6,7 @@
 
 #window {
   position: absolute;
+  background-color: rgb(245, 247, 248);
   left: 0px;
   top: 0px;
   height: 300px;

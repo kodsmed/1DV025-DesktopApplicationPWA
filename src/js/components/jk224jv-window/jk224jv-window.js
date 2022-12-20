@@ -103,6 +103,8 @@ customElements.define('jk224jv-window',
 
     /**
      * Make the component moveable.
+     *
+     * @param {event} event - mousedown event.
      */
     #startDrag (event) {
       event.preventDefault()
@@ -116,12 +118,19 @@ customElements.define('jk224jv-window',
       document.addEventListener('mouseup', this.#mouseUpHandler)
     }
 
+    /**
+     * Remove the eventlisteners responsible for moving the component.
+     */
     #stopDrag () {
-      console.log('stop')
       document.removeEventListener('mousemove', this.#dragHandler)
       document.removeEventListener('mouseup', this.#mouseUpHandler)
     }
 
+    /**
+     * Relocate the component by mousemovement.
+     *
+     * @param {event} event - mousemove event.
+     */
     #drag (event) {
       event.preventDefault()
       // how far have we moved?
@@ -133,10 +142,12 @@ customElements.define('jk224jv-window',
       this.#startY = event.clientY
       this.#window.style.left = `${this.#window.offsetLeft - dX}px`
       this.#window.style.top = `${this.#window.offsetTop - dY}px`
-      console.log(`${this.#window.style.left}, ${this.#window.style.top}`)
     }
 
-    #toggleMaximized() {
+    /**
+     * Maximize or restore the window.
+     */
+    #toggleMaximized () {
       this.#window.classList.toggle('maximized')
     }
   })
