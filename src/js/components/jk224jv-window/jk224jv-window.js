@@ -112,16 +112,14 @@ customElements.define('jk224jv-window',
       // where does the click start?
       this.#startX = event.clientX
       this.#startY = event.clientY
-      this.#header.addEventListener('mouseup', this.#mouseUpHandler)
-      this.#header.addEventListener('mouseout', this.#mouseOutHandler)
-      this.#header.addEventListener('mousemove', this.#dragHandler)
+      document.addEventListener('mousemove', this.#dragHandler)
+      document.addEventListener('mouseup', this.#mouseUpHandler)
     }
 
     #stopDrag () {
       console.log('stop')
-      this.#header.removeEventListener('mousemove', this.#dragHandler)
-      this.#header.removeEventListener('mouseup', this.#mouseUpHandler)
-      this.#header.removeEventListener('mouseout', this.#mouseOutHandler)
+      document.removeEventListener('mousemove', this.#dragHandler)
+      document.removeEventListener('mouseup', this.#mouseUpHandler)
     }
 
     #drag (event) {
