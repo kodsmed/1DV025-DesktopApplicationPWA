@@ -1,13 +1,13 @@
 /**
  * The jk224jv-window component.
  * Creates a windows-like box (div) with the following capabilities:
- * Movable:@todo required - not yet implemented
+ * Movable: @since 7d0c96ae
  * Closable: @todo required - not yet implemented
  * Minimizable: @todo extra - not yet implemented
- * Resizeable: @todo extra - not yet implemented
+ * Resizeable: @since 7d0c96ae
  *
  * @author Jimmy Karlsson <jk224jv@student.lnu.se>
- * @version 0.0.1 - Alfa
+ * @version 1.0.0
  */
 
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
