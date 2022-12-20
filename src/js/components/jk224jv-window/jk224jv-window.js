@@ -54,7 +54,7 @@ customElements.define('jk224jv-window',
         .appendChild(template.content.cloneNode(true))
 
       // get elements in the shadowroot
-      this.#header = this.shadowRoot.querySelector('#header')
+      this.#header = this.shadowRoot.querySelector('#title')
       this.#window = this.shadowRoot.querySelector('#window')
       this.#minimize = this.shadowRoot.querySelector('#minimize')
       this.#maximize = this.shadowRoot.querySelector('#maximize')
@@ -113,13 +113,15 @@ customElements.define('jk224jv-window',
       this.#startX = event.clientX
       this.#startY = event.clientY
       this.#header.addEventListener('mouseup', this.#mouseUpHandler)
-      window.addEventListener('mousemove', this.#dragHandler)
+      this.#header.addEventListener('mouseout', this.#mouseOutHandler)
+      this.#header.addEventListener('mousemove', this.#dragHandler)
     }
 
     #stopDrag () {
       console.log('stop')
-      window.removeEventListener('mousemove', this.#dragHandler)
+      this.#header.removeEventListener('mousemove', this.#dragHandler)
       this.#header.removeEventListener('mouseup', this.#mouseUpHandler)
+      this.#header.removeEventListener('mouseout', this.#mouseOutHandler)
     }
 
     #drag (event) {
@@ -137,6 +139,6 @@ customElements.define('jk224jv-window',
     }
 
     #toggleMaximized() {
-      
+      this.#window.classList.toggle('maximized')
     }
   })
