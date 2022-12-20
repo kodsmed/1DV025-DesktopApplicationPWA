@@ -63,6 +63,7 @@ customElements.define('jk224jv-window',
       // set listeners
       this.#header.addEventListener('mousedown', this.#startDrag.bind(this))
       this.#maximize.addEventListener('click', (event) => this.#toggleMaximized())
+      this.#minimize.addEventListener('click', (event) => this.#toggleMinimized())
     }
 
     /**
@@ -71,7 +72,7 @@ customElements.define('jk224jv-window',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return []
+      return ['width', 'height', 'zindex']
     }
 
     /**
@@ -149,5 +150,20 @@ customElements.define('jk224jv-window',
      */
     #toggleMaximized () {
       this.#window.classList.toggle('maximized')
+    }
+
+    /**
+     * Minimize the window.
+     */
+    #toggleMinimized () {
+      this.#window.classList.toggle('minimized')
+      this.dispatchEvent(new CustomEvent('minimizeMe'))
+    }
+
+    /**
+     * Dispach an event telling the window manager to remove this component.
+     */
+    #closeWindow () {
+      this.dispatchEvent(new CustomEvent('closeMe'))
     }
   })
