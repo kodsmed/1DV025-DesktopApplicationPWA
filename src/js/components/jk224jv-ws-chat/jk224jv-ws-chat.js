@@ -46,7 +46,7 @@ customElements.define('jk224jv-ws-chat',
           this.#socket.removeEventListener('message', this.#recieveMessage)
         })
 
-      this.addEventListener('inputRecieved', (event) => this.#sendMessage(event))
+      this.addEventListener('inputReceived', (event) => this.#sendMessage(event))
     }
 
     /**
@@ -82,8 +82,16 @@ customElements.define('jk224jv-ws-chat',
       //
     }
 
-    #sendMessage (event) {
-
+    async #sendMessage (event) {
+      const data =
+      {
+        type: "message",
+        data : event.detail,
+        username: "jk224jv",
+        channel: "1",
+        key: "eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd"
+      }
+      this.#socket.send(await JSON.stringify(data))
     }
 
     async #recieveMessage (event) {
@@ -91,5 +99,6 @@ customElements.define('jk224jv-ws-chat',
       if (msg.type === 'message' || msg.type === 'notification') {
         this.#display.textContent += `\n${msg.username}: ${msg.data}`
       }
+      this.#display.scrollTop = this.#display.scrollHeight
     }
   })
