@@ -38,16 +38,14 @@ customElements.define('jk224jv-ws-chat',
       // get elements in the shadowroot
       this.#display = this.shadowRoot.querySelector('textarea')
       // set listeners
-      this.addEventListener('load', (event) => {
-        this.#socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
-        this.#socket.addEventListener('open', (event) => {
-          this.#messageListener = this.#recieveMessage(event)
-          this.#socket.addEventListener('message', (event) => this.#messageListener)
-        })
-        this.#socket.addEventListener('close', (event) => {
-          this.#socket.removeEventListener('message', this.#messageListener)
-        })
+      this.#socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
+      this.#socket.addEventListener('open', (event) => {
+        this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
       })
+      this.#socket.addEventListener('close', (event) => {
+          this.#socket.removeEventListener('message', this.#recieveMessage)
+        })
+
       this.addEventListener('inputRecieved', (event) => this.#sendMessage(event))
     }
 
@@ -88,7 +86,10 @@ customElements.define('jk224jv-ws-chat',
 
     }
 
-    #recieveMessage (event) {
-
+    async #recieveMessage (event) {
+      const msg = await JSON.parse(event.data)
+      if (msg.type === 'message' || msg.type === 'notification') {
+        this.#display.textContent += `\n${msg.username}: ${msg.data}`
+      }
     }
   })
