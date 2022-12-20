@@ -9,12 +9,9 @@
   background-color: rgb(245, 247, 248);
   left: 0px;
   top: 0px;
-  height: 300px;
-  width: 500px;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
-  z-index: 1;
 }
 
 .maximized {

@@ -16,7 +16,7 @@ template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='window'>
     <div id='header'>
-      <div id='title'><p>Window</p></div>
+      <div id='title'><p></p></div>
       <div id='icons'>
         <button class='button-6' id='minimize'>_</button>
         <button class='button-6' id='maximize'>□</button>
@@ -72,7 +72,7 @@ customElements.define('jk224jv-window',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['width', 'height', 'zindex']
+      return ['width', 'height', 'title', 'zindex']
     }
 
     /**
@@ -84,7 +84,19 @@ customElements.define('jk224jv-window',
      */
     attributeChangedCallback (name, oldValue, newValue) {
       if (oldValue !== newValue) {
-        // todo
+        switch (name) {
+          case 'width':
+            this.#window.style.width = newValue
+            break
+          case 'height':
+            this.#window.style.height = newValue
+            break
+          case 'title':
+            this.#header.querySelector('p').textContent = newValue
+            break
+          case 'zindex':
+            this.#window.style.zIndex = parseInt(newValue)
+        }
       }
     }
 
@@ -92,7 +104,18 @@ customElements.define('jk224jv-window',
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
-      //
+      if (!this.hasAttribute('width')) {
+        this.setAttribute('width', '500px')
+      }
+      if (!this.hasAttribute('height')) {
+        this.setAttribute('height', '300px')
+      }
+      if (!this.hasAttribute('title')) {
+        this.setAttribute('title', 'Window')
+      }
+      if (!this.hasAttribute('zindex')) {
+        this.setAttribute('zindex', 1)
+      }
     }
 
     /**

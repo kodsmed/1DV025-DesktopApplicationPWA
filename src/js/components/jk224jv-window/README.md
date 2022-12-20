@@ -11,12 +11,12 @@ A web component that presents a os-style program box aka "window" to the user.
 ### `height`
 
 CSS value attribute, if present, sets the height of the component.
-Default = "fit-content"
+Default = "300px"
 
 ### `width`
 
 CSS value attribute, if present, sets the width of the component.
-Default = "fit-conent"
+Default = "500px"
 
 ### `title`
 
