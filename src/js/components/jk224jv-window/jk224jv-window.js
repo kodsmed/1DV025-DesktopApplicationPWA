@@ -38,6 +38,12 @@ customElements.define('jk224jv-window',
     #close
     #window
 
+    #mouseUpHandler
+    #mouseOutHandler
+    #dragHandler
+    #startX
+    #startY
+
     /**
      * Create and instance of the element.
      */
@@ -55,7 +61,8 @@ customElements.define('jk224jv-window',
       this.#close = this.shadowRoot.querySelector('#close')
 
       // set listeners
-      this.#header.addEventListener('mousedown', (event) => this.#drag(event))
+      this.#header.addEventListener('mousedown', this.#startDrag.bind(this))
+      this.#maximize.addEventListener('click', (event) => this.#toggleMaximized())
     }
 
     /**
@@ -95,13 +102,41 @@ customElements.define('jk224jv-window',
     }
 
     /**
-     * Moves the component.
-     *
-     * @param {event} event - mousedown event.
+     * Make the component moveable.
      */
+    #startDrag (event) {
+      event.preventDefault()
+      this.#dragHandler = this.#drag.bind(this)
+      this.#mouseUpHandler = this.#stopDrag.bind(this)
+      this.#mouseOutHandler = this.#stopDrag.bind(this)
+      // where does the click start?
+      this.#startX = event.clientX
+      this.#startY = event.clientY
+      this.#header.addEventListener('mouseup', this.#mouseUpHandler)
+      window.addEventListener('mousemove', this.#dragHandler)
+    }
+
+    #stopDrag () {
+      console.log('stop')
+      window.removeEventListener('mousemove', this.#dragHandler)
+      this.#header.removeEventListener('mouseup', this.#mouseUpHandler)
+    }
+
     #drag (event) {
-      console.log(event.clientX + ',' + event.clientY)
-      this.#window.style.left = `${event.clientX}px`
-      this.#window.style.top = `${event.clientY}px`
+      event.preventDefault()
+      // how far have we moved?
+      const dX = (this.#startX - event.clientX)
+      const dY = (this.#startY - event.clientY)
+
+      // save the new startpoint
+      this.#startX = event.clientX
+      this.#startY = event.clientY
+      this.#window.style.left = `${this.#window.offsetLeft - dX}px`
+      this.#window.style.top = `${this.#window.offsetTop - dY}px`
+      console.log(`${this.#window.style.left}, ${this.#window.style.top}`)
+    }
+
+    #toggleMaximized() {
+      
     }
   })

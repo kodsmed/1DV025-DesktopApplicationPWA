@@ -6,11 +6,15 @@
 
 #window {
   position: absolute;
+  left: 0px;
+  top: 0px;
   height: 300px;
   width: 500px;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
+
+  transition: all 0.5s;
 }
 
 #header {
@@ -22,6 +26,7 @@
   grid-template-columns: auto 75px;
   grid-template-areas: "title icons";
   border: 1px solid black;
+  transition: all 0.5s;
 }
 
 #title {
