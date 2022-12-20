@@ -147,7 +147,7 @@ customElements.define('jk224jv-input-dialogue',
      */
     #verifyInput () {
       // step 1... no code to be injected.
-      const forbidden = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/
+      const forbidden = /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/
       if (forbidden.test(this.#input.value)) {
         this.#submit.disabled = true
         this.#errorText.textContent = '!!! The input contains forbidden characters !!!'

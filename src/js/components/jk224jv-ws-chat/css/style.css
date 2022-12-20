@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+  margin:5px;
+}
+
+textarea {
+  width: 100%;
+  height: 20em;
+  resize: none;
+  scroll-behavior: smooth;
+  overflow-wrap: break-word;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
