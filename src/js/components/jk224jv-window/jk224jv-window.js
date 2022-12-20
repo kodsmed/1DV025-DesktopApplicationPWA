@@ -32,6 +32,12 @@ customElements.define('jk224jv-window',
  * Represents a jk224jv-window element.
  */
   class extends HTMLElement {
+    #header
+    #minimize
+    #maximize
+    #close
+    #window
+
     /**
      * Create and instance of the element.
      */
@@ -40,18 +46,62 @@ customElements.define('jk224jv-window',
 
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
+
+      // get elements in the shadowroot
+      this.#header = this.shadowRoot.querySelector('#header')
+      this.#window = this.shadowRoot.querySelector('#window')
+      this.#minimize = this.shadowRoot.querySelector('#minimize')
+      this.#maximize = this.shadowRoot.querySelector('#maximize')
+      this.#close = this.shadowRoot.querySelector('#close')
+
+      // set listeners
+      this.#header.addEventListener('mousedown', (event) => this.#drag(event))
     }
 
     /**
      * Listen to these attrbutes set in html.
      *
-     * @return {string}
+     * @returns {string[]} A string array of attributes to monitor.
      */
-    static get observedAttributes () {}
+    static get observedAttributes () {
+      return []
+    }
 
-    attributeChangedCallback (name, oldValue, newValue) {}
+    /**
+     * Called when observed attribute(s) changes.
+     *
+     * @param {string} name - the attributes name
+     * @param {*} oldValue - the previous value
+     * @param {*} newValue - the new value
+     */
+    attributeChangedCallback (name, oldValue, newValue) {
+      if (oldValue !== newValue) {
+        // todo
+      }
+    }
 
-    connectedCallback () {}
+    /**
+     * Run once as the component is inserted into the DOM.
+     */
+    connectedCallback () {
+      //
+    }
 
-    disconnectedCallback () {}
-})
+    /**
+     * Run once as the component is removed from the DOM.
+     */
+    disconnectedCallback () {
+      //
+    }
+
+    /**
+     * Moves the component.
+     *
+     * @param {event} event - mousedown event.
+     */
+    #drag (event) {
+      console.log(event.clientX + ',' + event.clientY)
+      this.#window.style.left = `${event.clientX}px`
+      this.#window.style.top = `${event.clientY}px`
+    }
+  })

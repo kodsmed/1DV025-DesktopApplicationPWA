@@ -17,6 +17,7 @@
   height:25px;
   width: 100%;
   background-color: rgb(5, 5, 146);
+  cursor: move;
   display: grid;
   grid-template-columns: auto 75px;
   grid-template-areas: "title icons";
@@ -44,8 +45,10 @@
 
 .button-6 {
   width: 25px;
-  font-weight: 600;
+  font-weight: 800;
   margin-right: 5px;
   margin-top:2px;
   margin-bottom: 2px;
+  border: 1px solid black;
+  font-size: 14px;
 }
