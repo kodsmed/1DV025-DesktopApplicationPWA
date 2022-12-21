@@ -72,7 +72,7 @@ customElements.define('jk224jv-window',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['width', 'height', 'title', 'zindex']
+      return ['width', 'height', 'title', 'zindex', 'x', 'y']
     }
 
     /**
@@ -86,16 +86,22 @@ customElements.define('jk224jv-window',
       if (oldValue !== newValue) {
         switch (name) {
           case 'width':
-            this.#window.style.width = newValue
+            this.#window.style.width = this.getAttribute('width')
             break
           case 'height':
-            this.#window.style.height = newValue
+            this.#window.style.height = this.getAttribute('height')
             break
           case 'title':
             this.#header.querySelector('p').textContent = newValue
             break
           case 'zindex':
-            this.#window.style.zIndex = parseInt(newValue)
+            this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
+            break
+          case 'x':
+            this.#window.style.left = this.getAttribute('x')
+            break
+          case 'y':
+            this.#window.style.top = this.getAttribute('y')
         }
       }
     }
@@ -164,8 +170,24 @@ customElements.define('jk224jv-window',
       // save the new startpoint
       this.#startX = event.clientX
       this.#startY = event.clientY
-      this.#window.style.left = `${this.#window.offsetLeft - dX}px`
-      this.#window.style.top = `${this.#window.offsetTop - dY}px`
+
+      // check for top and bottom
+      if (this.#window.offsetTop - dY < 25) {
+        this.#window.style.top = 25 + 'px'
+      } else if (this.#window.offsetTop - dY + this.#window.offsetHeight > window.innerHeight - 50) {
+        this.#window.style.top = (window.innerHeight - 50 - this.#window.offsetHeight) + 'px'
+      } else {
+        this.#window.style.top = `${this.#window.offsetTop - dY}px`
+      }
+
+      // check for left and right
+      if (this.#window.offsetLeft - dX < 0) {
+        this.#window.style.left = 0 + 'px'
+      } else if (this.#window.offsetLeft + this.#window.offsetWidth -dX > window.innerWidth) {
+        this.#window.style.left = (window.innerWidth - this.#window.offsetWidth) + 'px'
+      } else {
+        this.#window.style.left = `${this.#window.offsetLeft - dX}px`
+      }
     }
 
     /**
@@ -180,7 +202,9 @@ customElements.define('jk224jv-window',
      */
     #toggleMinimized () {
       this.#window.classList.toggle('minimized')
-      this.dispatchEvent(new CustomEvent('minimizeMe'))
+      if (this.#window.classList.contains('minimized')) {
+        this.dispatchEvent(new CustomEvent('minimizeMe'))
+      }
     }
 
     /**

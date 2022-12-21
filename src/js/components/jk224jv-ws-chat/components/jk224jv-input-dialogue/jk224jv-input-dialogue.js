@@ -214,7 +214,9 @@ customElements.define('jk224jv-input-dialogue',
      * @returns {string} escaped.
      */
     #clean (unclean) {
-      return unclean.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F')
+      const unverifiedstring = unclean + ''
+      const clean = unverifiedstring.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F')
+      return clean
     }
   }
 )
