@@ -14,7 +14,7 @@ template.innerHTML = `
     <div id='messages'>
       <textarea readonly="true"></textarea>
     </div>
-    <jk224jv-input-dialogue minlength="0" message=""></jk224jv-input.dialogue>
+    <jk224jv-input-dialogue minlength="0" maxlength="128" message="" ></jk224jv-input.dialogue>
   </div>
 `
 
@@ -43,8 +43,8 @@ customElements.define('jk224jv-ws-chat',
         this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
       })
       this.#socket.addEventListener('close', (event) => {
-          this.#socket.removeEventListener('message', this.#recieveMessage)
-        })
+        this.#socket.removeEventListener('message', this.#recieveMessage)
+      })
 
       this.addEventListener('inputReceived', (event) => this.#sendMessage(event))
     }
@@ -72,33 +72,56 @@ customElements.define('jk224jv-ws-chat',
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
-      //
+      // get username.
     }
 
     /**
      * Run once as the component is removed from the DOM.
      */
     disconnectedCallback () {
-      //
+      this.#socket.close()
+      this.#socket = null
     }
 
+    /**
+     * Sends a new message to the ws server.
+     *
+     * @todo Make username set-able.
+     *
+     * @param {event} event - inputReceived from input-dialogue component.
+     */
     async #sendMessage (event) {
       const data =
       {
-        type: "message",
-        data : event.detail,
-        username: "jk224jv",
-        channel: "1",
-        key: "eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd"
+        type: 'message',
+        data: event.detail,
+        username: 'jk224jv', // todo: make set-able.
+        channel: '1',
+        key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
       }
       this.#socket.send(await JSON.stringify(data))
     }
 
+    /**
+     * Handling incomming messages from the ws server.
+     *
+     * @param {event} event - ws-message event.
+     */
     async #recieveMessage (event) {
       const msg = await JSON.parse(event.data)
-      if (msg.type === 'message' || msg.type === 'notification') {
-        this.#display.textContent += `\n${msg.username}: ${msg.data}`
+      if (this.#clean(msg.type) === 'message' || this.#clean(msg.type) === 'notification') {
+        this.#display.textContent += `\n${msg.username}: ${msg.data}` // goes into 'safesink'.
+        this.#display.scrollTop = this.#display.scrollHeight
       }
-      this.#display.scrollTop = this.#display.scrollHeight
+    }
+
+    /**
+     * Cleans data.
+     *
+     * @param {string} unclean - untrusted data.
+     * @returns {string} escaped.
+     */
+    #clean (unclean) {
+      return unclean.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F')
     }
   })

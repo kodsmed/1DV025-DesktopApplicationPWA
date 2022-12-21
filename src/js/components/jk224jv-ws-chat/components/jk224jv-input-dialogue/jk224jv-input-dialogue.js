@@ -34,7 +34,7 @@ template.innerHTML = `
   <div class="container" part="dialoguebox">
     <form>
       <p id="input" part="text"></p>
-        <input type="text" id="inputUsername" part="dialogueinput">
+        <input type="text" id="inputUsername" part="dialogueinput" autocomplete="off">
         <input type="submit" id="submit" part="dialoguebtn" disabled>
       <p id="errorText" part="errortext">&nbsp;</p>
     </form>
@@ -147,21 +147,15 @@ customElements.define('jk224jv-input-dialogue',
      */
     #verifyInput () {
       // step 1... no code to be injected.
-      const forbidden = /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/
-      if (forbidden.test(this.#input.value)) {
+      if (this.#input.value.length < this.#minLength) {
         this.#submit.disabled = true
-        this.#errorText.textContent = '!!! The input contains forbidden characters !!!'
+        this.#errorText.textContent = 'The input is to short'
+      } else if (this.#input.value.length > this.#maxLength) {
+        this.#submit.disabled = true
+        this.#errorText.textContent = 'The input is to long'
       } else {
-        if (this.#input.value.length < this.#minLength) {
-          this.#submit.disabled = true
-          this.#errorText.textContent = 'The input is to short'
-        } else if (this.#input.value.length > this.#maxLength) {
-          this.#submit.disabled = true
-          this.#errorText.textContent = 'The input is to long'
-        } else {
-          this.#submit.removeAttribute('disabled')
-          this.#errorText.innerHTML = '<br>'
-        }
+        this.#submit.removeAttribute('disabled')
+        this.#errorText.innerHTML = '<br>'
       }
     }
 
@@ -174,6 +168,7 @@ customElements.define('jk224jv-input-dialogue',
       this.#submit.disabled = true
       event.preventDefault()
       this.dispatchEvent(new window.CustomEvent('inputReceived', { bubbles: true, composed: true, detail: this.#input.value }))
+      this.#input.value = ''
     }
 
     /**
@@ -185,16 +180,16 @@ customElements.define('jk224jv-input-dialogue',
      */
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'message') {
-        this.#inputQuestion.textContent = newValue
+        this.#inputQuestion.textContent = this.#clean(newValue)
       }
       if (name === 'buttontext') {
-        this.#submit.value = newValue
+        this.#submit.value = this.#clean(newValue)
       }
       if (name === 'minlength') {
-        this.#minLength = parseInt(newValue)
+        this.#minLength = this.#clean(parseInt(newValue))
       }
       if (name === 'maxlength') {
-        this.#maxLength = parseInt(newValue)
+        this.#maxLength = this.#clean(parseInt(newValue))
       }
     }
 
@@ -210,6 +205,16 @@ customElements.define('jk224jv-input-dialogue',
         delete this[prop]
         this[prop] = value
       }
+    }
+
+    /**
+     * Cleans data.
+     *
+     * @param {string} unclean - untrusted data.
+     * @returns {string} escaped.
+     */
+    #clean (unclean) {
+      return unclean.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F')
     }
   }
 )
