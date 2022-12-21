@@ -16,8 +16,8 @@ template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='desktop'>
     <div id='header'>a</div>
-    <div id='surface'>c
-      <jk224jv-window height="fit-content" x='50px' y='50px'>
+    <div id='surface'>
+      <jk224jv-window height="fit-content">
         <jk224jv-ws-chat slot="window-content"></jk224jv-ws-chat>
       </jk224jv-window>
     </div>
@@ -47,16 +47,18 @@ customElements.define('jk224jv-wm',
 
       // get elements in the shadowroot
       this.#header = this.shadowRoot.querySelector('#header')
+      this.#surface = this.shadowRoot.querySelector('#surface')
 
       // set listeners
-      this.addEventListener('minimizeMe', this.#minimizeHandler)
+      this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
+      this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
     }
 
     /**
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
-      //
+
     }
 
     /**
@@ -74,9 +76,11 @@ customElements.define('jk224jv-wm',
     }
 
     /**
-     * Dispach an event telling the window manager to remove this component.
+     * Removes the jk224jv-window component that dispatched the event.
+     *
+     * @param {event} event - closeMe event from window component.
      */
-    #closeWindow () {
-      this.dispatchEvent(new CustomEvent('closeMe'))
+    #closeWindow (event) {
+      this.#surface.removeChild(event.target)
     }
   })

@@ -42,9 +42,6 @@ customElements.define('jk224jv-ws-chat',
       this.#socket.addEventListener('open', (event) => {
         this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
       })
-      this.#socket.addEventListener('close', (event) => {
-        this.#socket.removeEventListener('message', this.#recieveMessage)
-      })
 
       this.addEventListener('inputReceived', (event) => this.#sendMessage(event))
     }

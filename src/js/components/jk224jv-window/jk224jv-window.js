@@ -64,6 +64,11 @@ customElements.define('jk224jv-window',
       this.#header.addEventListener('mousedown', this.#startDrag.bind(this))
       this.#maximize.addEventListener('click', (event) => this.#toggleMaximized())
       this.#minimize.addEventListener('click', (event) => this.#toggleMinimized())
+      this.#close.addEventListener('click', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
+      })
     }
 
     /**
@@ -183,7 +188,7 @@ customElements.define('jk224jv-window',
       // check for left and right
       if (this.#window.offsetLeft - dX < 0) {
         this.#window.style.left = 0 + 'px'
-      } else if (this.#window.offsetLeft + this.#window.offsetWidth -dX > window.innerWidth) {
+      } else if (this.#window.offsetLeft + this.#window.offsetWidth - dX > window.innerWidth) {
         this.#window.style.left = (window.innerWidth - this.#window.offsetWidth) + 'px'
       } else {
         this.#window.style.left = `${this.#window.offsetLeft - dX}px`
@@ -203,14 +208,7 @@ customElements.define('jk224jv-window',
     #toggleMinimized () {
       this.#window.classList.toggle('minimized')
       if (this.#window.classList.contains('minimized')) {
-        this.dispatchEvent(new CustomEvent('minimizeMe'))
+        this.dispatchEvent(new CustomEvent('minimizeMe', { bubbles: true, composed: true }))
       }
-    }
-
-    /**
-     * Dispach an event telling the window manager to remove this component.
-     */
-    #closeWindow () {
-      this.dispatchEvent(new CustomEvent('closeMe'))
     }
   })
