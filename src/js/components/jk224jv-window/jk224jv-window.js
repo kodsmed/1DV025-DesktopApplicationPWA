@@ -77,7 +77,7 @@ customElements.define('jk224jv-window',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['width', 'height', 'title', 'zindex', 'x', 'y']
+      return ['width', 'height', 'title', 'zindex', 'x', 'y', 'minimized']
     }
 
     /**
@@ -107,6 +107,14 @@ customElements.define('jk224jv-window',
             break
           case 'y':
             this.#window.style.top = this.getAttribute('y')
+            break
+        }
+        if (name === 'minimized') {
+          this.#window.classList.toggle('minimized')
+        } else if (!this.hasAttribute('minimized')) {
+          if (this.#window.classList.contains('minimized')) {
+            this.#window.classList.remove('minimized')
+          }
         }
       }
     }
@@ -206,9 +214,7 @@ customElements.define('jk224jv-window',
      * Minimize the window.
      */
     #toggleMinimized () {
-      this.#window.classList.toggle('minimized')
-      if (this.#window.classList.contains('minimized')) {
-        this.dispatchEvent(new CustomEvent('minimizeMe', { bubbles: true, composed: true }))
-      }
+      this.setAttribute('minimized', true)
+      this.dispatchEvent(new CustomEvent('minimizeMe', { bubbles: true, composed: true }))
     }
   })

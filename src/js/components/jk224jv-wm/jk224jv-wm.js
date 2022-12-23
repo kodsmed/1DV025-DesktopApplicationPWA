@@ -21,7 +21,7 @@ template.innerHTML = `
         <jk224jv-ws-chat slot="window-content"></jk224jv-ws-chat>
       </jk224jv-window>
     </div>
-    <div id='dock'>b</div>
+    <jk224jv-dock id="dock"></jk224jv-dock>
   </div>
 `
 
@@ -44,7 +44,6 @@ customElements.define('jk224jv-wm',
 
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
-
       // get elements in the shadowroot
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
@@ -70,9 +69,11 @@ customElements.define('jk224jv-wm',
 
     /**
      * Minimize the window.
+     *
+     * @param {event} event - minimizeMe from window component.
      */
-    #minimizeHandler () {
-      //
+    #minimizeHandler (event) {
+      console.log(`${event.target} minimized`)
     }
 
     /**

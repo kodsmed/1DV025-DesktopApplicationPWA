@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 
-import './components/jk224jv-wm/index.js'
-import './components/jk224jv-window/index.js'
-import './components/jk224jv-ws-chat/index.js'
+import './components/jk224jv-wm/'
+import './components/jk224jv-window/'
+import './components/jk224jv-dock/'
+import './components/jk224jv-ws-chat/'
