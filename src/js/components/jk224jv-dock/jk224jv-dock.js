@@ -13,7 +13,7 @@ template.innerHTML = `
   <div id='dock'>
     <div id='buttons'>
     </div>
-    <div id='minis'><button></button><button></div>
+    <div id='minis'></div>
   </div>
 `
 
@@ -37,17 +37,37 @@ customElements.define('jk224jv-dock',
 
       // get elements in the shadowroot
       this.#buttons = this.shadowRoot.querySelector('#buttons')
+      this.#minis = this.shadowRoot.querySelector('#minis')
 
       // set listeners
+      this.#buttons.addEventListener('click', (event) => {
+        this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed:true, detail:event.target.id }))
+        event.preventDefault()
+        event.stopPropagation()
+      })
+      this.#minis.addEventListener('click', (event) => {
+        this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail:event.target.id }))
+        event.preventDefault()
+        event.stopPropagation()
+      })
     }
 
     /**
      * Update the component by passing an object.
      *
-     * @param {object} object - information from parent app.
+     * @param {object} mWins - minimizedWindows - information from parent app.
      */
-    uppdate (object) {
+    update (mWins) {
+      while (this.#minis.firstChild) {
+        this.#minis.removeChild(this.#minis.firstChild)
+      }
 
+      for (let mWin = 0; mWin < mWins.ids.length; mWin++){
+        const newMWRep = document.createElement('button')
+        newMWRep.setAttribute('id', mWins.ids[mWin])
+        newMWRep.textContent = mWins.titles[mWin]
+        this.#minis.appendChild(newMWRep)
+      }
     }
 
     /**

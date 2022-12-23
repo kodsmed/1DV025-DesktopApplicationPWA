@@ -47,17 +47,22 @@ customElements.define('jk224jv-wm',
       // get elements in the shadowroot
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
+      this.#dock = this.shadowRoot.querySelector('#dock')
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
+      window.addEventListener('load', (event) => {
+        console.log('load')
+        this.#dock.update({ titles: ['we chat', 'Omnissiahs Tarot', 'Pixel Wars'], ids: [0, 1, 2] })
+      })
+      //
     }
 
     /**
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
-
     }
 
     /**
