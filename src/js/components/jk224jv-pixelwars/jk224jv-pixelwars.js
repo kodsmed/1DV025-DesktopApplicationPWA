@@ -14,25 +14,34 @@ template.innerHTML = `
       font-size: 1.2em;
       color:black;
       overflow:hidden;
-      width:750px;
+      width: 750px;
+
     }
     div {
       width:750px;
-      display:flex;
+      height: 'fit-content';
+      display: flex;
       flex-direction:column;
     }
 
     div#canvasWrapper {
+      display:flex;
+      justify-content: center;
+      justify-items: center;
+      align-content: center;
+      align-items:center;
       padding: 2px;
+      width: 'fit-content';
+      height: 'fit-content';
     }
 
     canvas {
-      width:750px;
-      height:750px;
+      width: 750px;
+      height: 750px;
     }
   </style>
   <div id="canvasWrapper">
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" height="500" width="500"></canvas>
     <div class="buttonSpace" part="buttonSpace">
       <p part="instructions">Hold mouse-button to shoot. Aim with mouse.<br>
       Upgrades cost 100 * number of upgrades bought score.</p><hr>
@@ -44,7 +53,7 @@ template.innerHTML = `
 
 `
 
-customElements.define('jk224jv-pixel-wars',
+customElements.define('jk224jv-pixelwars',
   /**
    * Represents a pixel-wars element.
    *
@@ -133,25 +142,21 @@ customElements.define('jk224jv-pixel-wars',
       this.#canvas = this.shadowRoot.querySelector('canvas')
       this.#ctx = this.#canvas.getContext('2d')
 
-      // Get the DPR and size of the canvas
-      const dpr = window.devicePixelRatio
-      const rect = this.#canvas.getBoundingClientRect()
-
       // Set the "actual" size of the canvas
-      this.#canvas.width = rect.width * dpr
-      this.#canvas.height = rect.height * dpr
+      this.#canvas.width = 500
+      this.#canvas.height = 500
 
       // Set the "drawn" size of the canvas
-      this.#canvas.style.width = `${rect.width}px`
-      this.#canvas.style.height = `${rect.height}px`
+      this.#canvas.style.width = `${500}px`
+      this.#canvas.style.height = `${500}px`
 
       // Set and store settings.
       this.#settings = {
         tickTime: 10,
         tickNumber: 0,
         backgroundColor: 'white',
-        enemyColor: 'black',
-        friendlyColor: 'black',
+        enemyColor: 'red',
+        friendlyColor: 'green',
         textColor: 'black'
       }
 
@@ -161,8 +166,8 @@ customElements.define('jk224jv-pixel-wars',
       this.#level = 1
 
       this.#tower = {
-        xPos: Math.floor(750 / 2),
-        yPos: Math.floor(750 / 2),
+        xPos: Math.floor(500 / 2),
+        yPos: Math.floor(500 / 2),
         size: 50,
         fireSize: 5,
         fireDelay: 300,
@@ -215,19 +220,23 @@ customElements.define('jk224jv-pixel-wars',
      */
     connectedCallback () {
       const canvas = this.shadowRoot.getElementById('canvas')
-      canvas.addEventListener('mousedown', (event) => this.#startShooting())
+      canvas.addEventListener('mousedown', () => this.#startShooting())
       canvas.addEventListener('mousemove', (event) => this.#mouseTracker(event))
-      canvas.addEventListener('mouseup', (event) => this.#stopShooting())
-      canvas.addEventListener('mouseleave', (event) => this.pause())
-      canvas.addEventListener('mouseenter', (event) => this.#gameEngineLoop())
-      this.addEventListener('gameOver', (event) => this.#gameOver())
+      canvas.addEventListener('mouseup', () => this.#stopShooting())
+      canvas.addEventListener('mouseleave', () => this.pause())
+      canvas.addEventListener('mouseenter', () => this.#gameEngineLoop())
+      this.addEventListener('gameOver', () => this.#gameOver())
 
       const speedUpgrade = this.shadowRoot.getElementById('upgradeSpeed')
       const bulletUpgrade = this.shadowRoot.getElementById('upgradeBullet')
       const resterTowerHp = this.shadowRoot.getElementById('upgradeRestoreHp')
-      speedUpgrade.addEventListener('click', (event) => this.#buyUpgrade('speed'))
-      bulletUpgrade.addEventListener('click', (event) => this.#buyUpgrade('bullet'))
-      resterTowerHp.addEventListener('click', (event) => this.#buyUpgrade('hp'))
+      speedUpgrade.addEventListener('click', () => this.#buyUpgrade('speed'))
+      bulletUpgrade.addEventListener('click', () => this.#buyUpgrade('bullet'))
+      resterTowerHp.addEventListener('click', () => this.#buyUpgrade('hp'))
+
+      if (!this.hasAttribute('backgroundcolor')) {
+        this.setAttribute('backgroundcolor', 'white')
+      }
     }
 
     /**
@@ -264,7 +273,7 @@ customElements.define('jk224jv-pixel-wars',
      * @param {event} event - event.
      */
     #mouseTracker (event) {
-      this.#mouseLocation = { x: event.pageX, y: event.pageY }
+      this.#mouseLocation = { x: event.layerX - 128, y: event.layerY - 68 }
     }
 
     /**
@@ -435,7 +444,9 @@ customElements.define('jk224jv-pixel-wars',
      * Creates new bullets.
      */
     #startShooting () {
-      this.#shootingIntervalId = window.setInterval(this.#shoot.bind(this), this.#tower.fireDelay)
+      if (!this.#shootingIntervalId) {
+        this.#shootingIntervalId = window.setInterval(this.#shoot.bind(this), this.#tower.fireDelay)
+      }
     }
 
     /**
@@ -443,6 +454,7 @@ customElements.define('jk224jv-pixel-wars',
      */
     #stopShooting () {
       window.clearInterval(this.#shootingIntervalId)
+      this.#shootingIntervalId = null
     }
 
     /**
