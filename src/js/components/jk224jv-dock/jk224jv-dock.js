@@ -41,12 +41,12 @@ customElements.define('jk224jv-dock',
 
       // set listeners
       this.#buttons.addEventListener('click', (event) => {
-        this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.id }))
+        this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.dataid }))
         event.preventDefault()
         event.stopPropagation()
       })
       this.#minis.addEventListener('click', (event) => {
-        this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.id }))
+        this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.dataid }))
         event.preventDefault()
         event.stopPropagation()
       })
@@ -64,7 +64,7 @@ customElements.define('jk224jv-dock',
 
       for (let mWin = 0; mWin < mWins.ids.length; mWin++) {
         const newMWRep = document.createElement('button')
-        newMWRep.setAttribute('id', mWins.ids[mWin])
+        newMWRep.setAttribute('dataid', mWins.ids[mWin])
         newMWRep.textContent = mWins.titles[mWin]
         this.#minis.appendChild(newMWRep)
       }
@@ -74,15 +74,17 @@ customElements.define('jk224jv-dock',
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
-      const files = ['chat', 'memory', 'pixelwars', 'tarot']
+      // inserts the 'start a new app' buttons.
+      const files = ['ws-chat', 'memory', 'pixelwars', 'tarot']
       files.forEach(file => {
         const IMG_URL = (new URL(`./img/${file}.ico`, import.meta.url))
         const newButton = document.createElement('button')
         const newImage = document.createElement('img')
         newImage.setAttribute('src', IMG_URL)
         newImage.setAttribute('height', '25px')
+        newImage.dataid = file
         newButton.appendChild(newImage)
-        newButton.id = file
+        newButton.dataid = file
         this.#buttons.appendChild(newButton)
       })
     }

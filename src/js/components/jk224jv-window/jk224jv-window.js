@@ -77,7 +77,7 @@ customElements.define('jk224jv-window',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['width', 'height', 'title', 'zindex', 'x', 'y', 'minimized']
+      return ['width', 'height', 'title', 'zindex', 'xpos', 'ypos', 'minimized']
     }
 
     /**
@@ -102,11 +102,12 @@ customElements.define('jk224jv-window',
           case 'zindex':
             this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
             break
-          case 'x':
-            this.#window.style.left = this.getAttribute('x')
+          case 'xpos':
+            this.#window.style.left = this.getAttribute('xpos')
+            console.log(this.getAttribute('xpos'))
             break
-          case 'y':
-            this.#window.style.top = this.getAttribute('y')
+          case 'ypos':
+            this.#window.style.top = this.getAttribute('ypos')
             break
         }
         if (name === 'minimized') {

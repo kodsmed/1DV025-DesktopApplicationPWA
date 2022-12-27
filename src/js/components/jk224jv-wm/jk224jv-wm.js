@@ -17,9 +17,6 @@ template.innerHTML = `
   <div id='desktop'>
     <div id='header'>a</div>
     <div id='surface'>
-      <jk224jv-window height="fit-content">
-        <jk224jv-ws-chat slot="window-content"></jk224jv-ws-chat>
-      </jk224jv-window>
     </div>
     <jk224jv-dock id="dock"></jk224jv-dock>
   </div>
@@ -48,12 +45,12 @@ customElements.define('jk224jv-wm',
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
       this.#dock = this.shadowRoot.querySelector('#dock')
-      this.#openWindows = { titles: [], ids: [], xPos: [], yPos: [], zPos: [] }
+      this.#openWindows = { titles: [], dataids: [], xPos: [], yPos: [], zPos: [] }
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
-      this.#surface.addEventListener('startNew', (event) => this.#startNewHandler(event))
+      window.addEventListener('startNew', (event) => this.#startNewHandler(event))
       //
     }
 
@@ -94,6 +91,25 @@ customElements.define('jk224jv-wm',
      * @param {event} event - startNew event from dock component.
      */
     #startNewHandler (event) {
+      console.log(event.detail)
+      const windowToAdd = document.createElement('jk224jv-window')
+      windowToAdd.setAttribute('title', event.detail)
+      windowToAdd.setAttribute('height', 'fit-content')
+      windowToAdd.setAttribute('xpos', `${25 * (this.#openWindows.xPos.length + 1)}px`)
+      windowToAdd.setAttribute('ypos', `${25 * (this.#openWindows.yPos.length + 1)}px`)
+      windowToAdd.setAttribute('zindex', this.#openWindows.zPos.length)
+      windowToAdd.setAttribute('dataid', this.#openWindows.dataids.length)
 
+      const contentToAdd = document.createElement(`jk224jv-${event.detail}`)
+      contentToAdd.setAttribute('slot', 'window-content')
+
+      this.#openWindows.titles.push(event.detail)
+      this.#openWindows.dataids.push(windowToAdd.getAttribute('dataid'))
+      this.#openWindows.xPos.push(windowToAdd.getAttribute('xPos'))
+      this.#openWindows.yPos.push(windowToAdd.getAttribute('yPos'))
+      this.#openWindows.zPos.push(windowToAdd.getAttribute('zindex'))
+
+      windowToAdd.appendChild(contentToAdd)
+      this.#surface.appendChild(windowToAdd)
     }
   })
