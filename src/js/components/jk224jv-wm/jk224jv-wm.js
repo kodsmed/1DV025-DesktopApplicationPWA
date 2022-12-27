@@ -34,7 +34,7 @@ customElements.define('jk224jv-wm',
     #surface
     #dock
 
-    #windows
+    #openWindows
 
     /**
      * Create and instance of the element.
@@ -48,14 +48,12 @@ customElements.define('jk224jv-wm',
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
       this.#dock = this.shadowRoot.querySelector('#dock')
+      this.#openWindows = { titles: [], ids: [], xPos: [], yPos: [], zPos: [] }
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
-      window.addEventListener('load', (event) => {
-        console.log('load')
-        this.#dock.update({ titles: ['we chat', 'Omnissiahs Tarot', 'Pixel Wars'], ids: [0, 1, 2] })
-      })
+      this.#surface.addEventListener('startNew', (event) => this.#startNewHandler(event))
       //
     }
 
@@ -88,5 +86,14 @@ customElements.define('jk224jv-wm',
      */
     #closeWindow (event) {
       this.#surface.removeChild(event.target)
+    }
+
+    /**
+     * Starts a new sub-application window.
+     *
+     * @param {event} event - startNew event from dock component.
+     */
+    #startNewHandler (event) {
+
     }
   })
