@@ -106,6 +106,7 @@ customElements.define('jk224jv-wm',
       const windowToAdd = document.createElement('jk224jv-window')
       windowToAdd.setAttribute('title', event.detail)
       windowToAdd.setAttribute('height', 'fit-content')
+      windowToAdd.setAttribute('width', 'fit-content')
       windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
       windowToAdd.setAttribute('ypos', `${30 * ((this.#openWindows.length) % 10 + 1)}px`)
       windowToAdd.setAttribute('zindex', this.#openWindows.length)
