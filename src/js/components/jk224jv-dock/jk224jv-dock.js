@@ -41,12 +41,12 @@ customElements.define('jk224jv-dock',
 
       // set listeners
       this.#buttons.addEventListener('click', (event) => {
-        this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed:true, detail:event.target.id }))
+        this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.id }))
         event.preventDefault()
         event.stopPropagation()
       })
       this.#minis.addEventListener('click', (event) => {
-        this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail:event.target.id }))
+        this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.id }))
         event.preventDefault()
         event.stopPropagation()
       })
@@ -62,7 +62,7 @@ customElements.define('jk224jv-dock',
         this.#minis.removeChild(this.#minis.firstChild)
       }
 
-      for (let mWin = 0; mWin < mWins.ids.length; mWin++){
+      for (let mWin = 0; mWin < mWins.ids.length; mWin++) {
         const newMWRep = document.createElement('button')
         newMWRep.setAttribute('id', mWins.ids[mWin])
         newMWRep.textContent = mWins.titles[mWin]
