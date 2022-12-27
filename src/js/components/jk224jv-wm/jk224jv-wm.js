@@ -45,7 +45,7 @@ customElements.define('jk224jv-wm',
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
       this.#dock = this.shadowRoot.querySelector('#dock')
-      this.#openWindows = { titles: [], dataids: [], xPos: [], yPos: [], zPos: [] }
+      this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  }
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
@@ -82,6 +82,17 @@ customElements.define('jk224jv-wm',
      * @param {event} event - closeMe event from window component.
      */
     #closeWindow (event) {
+      let index = null
+      for (let entry = 0; entry < this.#openWindows.length; entry++) {
+        if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
+          index = entry
+        }
+      }
+
+      if (index) { // this should never be needed
+        this.#openWindows.splice(index, 1)
+      }
+
       this.#surface.removeChild(event.target)
     }
 
@@ -95,19 +106,23 @@ customElements.define('jk224jv-wm',
       const windowToAdd = document.createElement('jk224jv-window')
       windowToAdd.setAttribute('title', event.detail)
       windowToAdd.setAttribute('height', 'fit-content')
-      windowToAdd.setAttribute('xpos', `${25 * (this.#openWindows.xPos.length + 1)}px`)
-      windowToAdd.setAttribute('ypos', `${25 * (this.#openWindows.yPos.length + 1)}px`)
-      windowToAdd.setAttribute('zindex', this.#openWindows.zPos.length)
-      windowToAdd.setAttribute('dataid', this.#openWindows.dataids.length)
+      windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
+      windowToAdd.setAttribute('ypos', `${30 * ((this.#openWindows.length) % 10 + 1)}px`)
+      windowToAdd.setAttribute('zindex', this.#openWindows.length)
+      windowToAdd.setAttribute('dataid', this.#openWindows.length)
 
       const contentToAdd = document.createElement(`jk224jv-${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
 
-      this.#openWindows.titles.push(event.detail)
-      this.#openWindows.dataids.push(windowToAdd.getAttribute('dataid'))
-      this.#openWindows.xPos.push(windowToAdd.getAttribute('xPos'))
-      this.#openWindows.yPos.push(windowToAdd.getAttribute('yPos'))
-      this.#openWindows.zPos.push(windowToAdd.getAttribute('zindex'))
+      const windowData = {
+        title: event.detail,
+        dataid: windowToAdd.getAttribute('dataid'),
+        xPos: windowToAdd.getAttribute('xPos'),
+        yPos: windowToAdd.getAttribute('yPos'),
+        zPos: windowToAdd.getAttribute('zindex')
+      }
+
+      this.#openWindows.push(windowData)
 
       windowToAdd.appendChild(contentToAdd)
       this.#surface.appendChild(windowToAdd)
