@@ -105,7 +105,7 @@ customElements.define('jk224jv-wm',
 
       let index
       for (let entry = 0; entry < this.#minimizedWindows.length; entry++) {
-        if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
+        if (this.#minimizedWindows[entry].dataid === event.detail) {
           index = entry
         }
       }
@@ -147,9 +147,11 @@ customElements.define('jk224jv-wm',
         this.#openTitles[event.detail] = 1
       }
 
-      console.log(this.#openTitles)
-
-      windowToAdd.setAttribute('title', `${event.detail} (${this.#openTitles[event.detail]})`)
+      let title = event.detail
+      if (this.#openTitles[event.detail] > 1) {
+        title += ` (${this.#openTitles[event.detail]})`
+      }
+      windowToAdd.setAttribute('title', title)
       windowToAdd.setAttribute('height', 'fit-content')
       windowToAdd.setAttribute('width', 'fit-content')
       windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
@@ -161,7 +163,7 @@ customElements.define('jk224jv-wm',
       contentToAdd.setAttribute('slot', 'window-content')
 
       const windowData = {
-        title: `${event.detail} (${this.#openTitles[event.detail]})`,
+        title: windowToAdd.getAttribute('title'),
         dataid: windowToAdd.getAttribute('dataid'),
         xPos: windowToAdd.getAttribute('xPos'),
         yPos: windowToAdd.getAttribute('yPos'),

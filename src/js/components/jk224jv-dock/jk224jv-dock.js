@@ -41,14 +41,18 @@ customElements.define('jk224jv-dock',
 
       // set listeners
       this.#buttons.addEventListener('click', (event) => {
-        this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.dataid }))
         event.preventDefault()
         event.stopPropagation()
+        if (event.target.dataid) {
+          this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.dataid }))
+        }
       })
       this.#minis.addEventListener('click', (event) => {
-        this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.dataid }))
         event.preventDefault()
         event.stopPropagation()
+        if (event.target.dataid) {
+          this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.dataid }))
+        }
       })
     }
 
@@ -66,7 +70,7 @@ customElements.define('jk224jv-dock',
         const newMWRep = document.createElement('button')
         newMWRep.setAttribute('dataid', mWins[mWin].dataid)
         newMWRep.dataid = mWins[mWin].dataid
-        newMWRep.textContent = mWins[mWin].title
+        newMWRep.textContent = mWins[mWin].title + mWins[mWin].dataid
         this.#minis.appendChild(newMWRep)
       }
     }
