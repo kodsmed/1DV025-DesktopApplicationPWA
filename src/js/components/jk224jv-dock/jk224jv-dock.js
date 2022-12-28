@@ -55,17 +55,17 @@ customElements.define('jk224jv-dock',
     /**
      * Update the component by passing an object.
      *
-     * @param {object} mWins - minimizedWindows - information from parent app.
+     * @param {object[]} mWins - minimizedWindows - information from parent app.
      */
     update (mWins) {
       while (this.#minis.firstChild) {
         this.#minis.removeChild(this.#minis.firstChild)
       }
 
-      for (let mWin = 0; mWin < mWins.ids.length; mWin++) {
+      for (let mWin = 0; mWin < mWins.length; mWin++) {
         const newMWRep = document.createElement('button')
-        newMWRep.setAttribute('dataid', mWins.ids[mWin])
-        newMWRep.textContent = mWins.titles[mWin]
+        newMWRep.setAttribute('dataid', mWins[mWin].dataid)
+        newMWRep.textContent = mWins[mWin].title
         this.#minis.appendChild(newMWRep)
       }
     }

@@ -32,6 +32,7 @@ customElements.define('jk224jv-wm',
     #dock
 
     #openWindows
+    #minimizedWindows
 
     /**
      * Create and instance of the element.
@@ -46,6 +47,7 @@ customElements.define('jk224jv-wm',
       this.#surface = this.shadowRoot.querySelector('#surface')
       this.#dock = this.shadowRoot.querySelector('#dock')
       this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  }
+      this.#minimizedWindows = []
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
@@ -73,7 +75,19 @@ customElements.define('jk224jv-wm',
      * @param {event} event - minimizeMe from window component.
      */
     #minimizeHandler (event) {
-      console.log(`${event.target} minimized`)
+      console.log(`${event.target.getAttribute('dataid')} minimized`)
+      let index
+      for (let entry = 0; entry < this.#openWindows.length; entry++) {
+        if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
+          index = entry
+        }
+      }
+      const minimizedWindowData = {
+        title: this.#openWindows[index].title,
+        dataid: this.#openWindows[index].dataid
+      }
+      this.#minimizedWindows.push(minimizedWindowData)
+      this.#dock.update(this.#minimizedWindows)
     }
 
     /**

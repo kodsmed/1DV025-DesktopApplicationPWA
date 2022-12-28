@@ -6,12 +6,6 @@
  */
 import { tarotDeck } from './tarotdeck.js'
 
-try {
-  document.onload = main()
-} catch (e) {
-  console.error(e.message)
-}
-
 /**
  * Main function  and starting point of the application.
  */
