@@ -30,6 +30,7 @@ customElements.define('jk224jv-wm',
     #header
     #surface
     #dock
+    #dataConcent
 
     #openWindows
     #openTitles
@@ -56,7 +57,18 @@ customElements.define('jk224jv-wm',
       window.addEventListener('restoreClicked', this.#restoreHandler.bind(this))
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
       window.addEventListener('startNew', (event) => this.#startNewHandler(event))
-      //
+
+      if (!document.cookie.length > 0) {
+        this.#dataConcent = confirm('Everyone loves to deal with these, but dataprotection laws mandates your approval for the WindowManager to store your data.\n\n Whithout this permission the application will still work, it will just be dumber.\n\n Stored data concists of windowstates, username and cache.  Is this acceptable? (ok to accept)')
+      } else { // if there is any cookie, permission was given.
+        this.#dataConcent = true
+      }
+
+      if (this.#dataConcent) {
+        const date = new Date()
+        date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000))
+        document.cookie = `storageAccepted = true; expires=${date.toGMTString()}`
+      }
     }
 
     /**

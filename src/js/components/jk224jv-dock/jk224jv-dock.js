@@ -70,7 +70,7 @@ customElements.define('jk224jv-dock',
         const newMWRep = document.createElement('button')
         newMWRep.setAttribute('dataid', mWins[mWin].dataid)
         newMWRep.dataid = mWins[mWin].dataid
-        newMWRep.textContent = mWins[mWin].title + mWins[mWin].dataid
+        newMWRep.textContent = mWins[mWin].title
         this.#minis.appendChild(newMWRep)
       }
     }
