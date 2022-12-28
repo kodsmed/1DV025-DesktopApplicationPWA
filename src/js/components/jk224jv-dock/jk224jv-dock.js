@@ -65,6 +65,7 @@ customElements.define('jk224jv-dock',
       for (let mWin = 0; mWin < mWins.length; mWin++) {
         const newMWRep = document.createElement('button')
         newMWRep.setAttribute('dataid', mWins[mWin].dataid)
+        newMWRep.dataid = mWins[mWin].dataid
         newMWRep.textContent = mWins[mWin].title
         this.#minis.appendChild(newMWRep)
       }

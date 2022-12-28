@@ -32,6 +32,7 @@ customElements.define('jk224jv-wm',
     #dock
 
     #openWindows
+    #openTitles
     #minimizedWindows
 
     /**
@@ -46,11 +47,13 @@ customElements.define('jk224jv-wm',
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
       this.#dock = this.shadowRoot.querySelector('#dock')
-      this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  }
+      this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  reference: {HTMLElement}}
       this.#minimizedWindows = []
+      this.#openTitles = {}
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
+      window.addEventListener('restoreClicked', this.#restoreHandler.bind(this))
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
       window.addEventListener('startNew', (event) => this.#startNewHandler(event))
       //
@@ -91,6 +94,26 @@ customElements.define('jk224jv-wm',
     }
 
     /**
+     * Restores previously minimized windows.
+     *
+     * @param {event} event - restoreClicked event from dock.
+     */
+    #restoreHandler (event) {
+      console.log(event.detail)
+      const affectedWindow = this.#surface.querySelector(`[dataid = "${event.detail}"]`)
+      affectedWindow.removeAttribute('minimized')
+
+      let index
+      for (let entry = 0; entry < this.#minimizedWindows.length; entry++) {
+        if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
+          index = entry
+        }
+      }
+      this.#minimizedWindows.splice(index, 1)
+      this.#dock.update(this.#minimizedWindows)
+    }
+
+    /**
      * Removes the jk224jv-window component that dispatched the event.
      *
      * @param {event} event - closeMe event from window component.
@@ -118,7 +141,15 @@ customElements.define('jk224jv-wm',
     #startNewHandler (event) {
       console.log(event.detail)
       const windowToAdd = document.createElement('jk224jv-window')
-      windowToAdd.setAttribute('title', event.detail)
+      if (this.#openTitles[event.detail]) {
+        this.#openTitles[event.detail]++
+      } else {
+        this.#openTitles[event.detail] = 1
+      }
+
+      console.log(this.#openTitles)
+
+      windowToAdd.setAttribute('title', `${event.detail} (${this.#openTitles[event.detail]})`)
       windowToAdd.setAttribute('height', 'fit-content')
       windowToAdd.setAttribute('width', 'fit-content')
       windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
@@ -130,7 +161,7 @@ customElements.define('jk224jv-wm',
       contentToAdd.setAttribute('slot', 'window-content')
 
       const windowData = {
-        title: event.detail,
+        title: `${event.detail} (${this.#openTitles[event.detail]})`,
         dataid: windowToAdd.getAttribute('dataid'),
         xPos: windowToAdd.getAttribute('xPos'),
         yPos: windowToAdd.getAttribute('yPos'),
