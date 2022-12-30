@@ -26,6 +26,8 @@ customElements.define('jk224jv-ws-chat',
     #display
     #socket
     #messageListener
+    #username
+    #storageAccepted
     /**
      * Create and instance of the element.
      */
@@ -44,6 +46,16 @@ customElements.define('jk224jv-ws-chat',
       })
 
       this.addEventListener('inputReceived', (event) => this.#sendMessage(event))
+
+      const username = this.#getCookie('username')
+      if (username) {
+        this.#username = username
+        this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', username)
+      } else {
+        this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', 'Send me your prefered username')
+      }
+
+      this.#storageAccepted = this.#getCookie('storageAccepted')
     }
 
     /**
@@ -88,15 +100,28 @@ customElements.define('jk224jv-ws-chat',
      * @param {event} event - inputReceived from input-dialogue component.
      */
     async #sendMessage (event) {
-      const data =
-      {
-        type: 'message',
-        data: event.detail,
-        username: 'jk224jv', // todo: make set-able.
-        channel: '1',
-        key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
+      if (this.#username) {
+        const data =
+        {
+          type: 'message',
+          data: event.detail,
+          username: this.#username, // todo: make set-able.
+          channel: '1',
+          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
+        }
+        this.#socket.send(await JSON.stringify(data))
+      } else {
+        this.#username = event.detail
+        if (this.#storageAccepted) {
+          const date = new Date()
+          date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000))
+          document.cookie = `username = ${event.detail}; expires=${date.toGMTString()}`
+          this.#display.textContent += '\nws-chat: username saved; clear cookies to reset.'
+        } else {
+          this.#display.textContent += '\nws-chat: you have opted out of datastorage; your username will reset after this session.'
+        }
+        this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', event.detail)
       }
-      this.#socket.send(await JSON.stringify(data))
     }
 
     /**
@@ -120,5 +145,21 @@ customElements.define('jk224jv-ws-chat',
      */
     #clean (unclean) {
       return unclean.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F')
+    }
+
+    /**
+     * Reads cookies. Return the value of the cookie with matching name.
+     *
+     * @param {string} name - name of cookie.
+     * @returns {string} value
+     */
+    #getCookie (name) {
+      const pattern = RegExp(name + '=.[^;]*')
+      const matched = document.cookie.match(pattern)
+      if (matched) {
+        const cookie = matched[0].split('=')
+        return cookie[1]
+      }
+      return false
     }
   })

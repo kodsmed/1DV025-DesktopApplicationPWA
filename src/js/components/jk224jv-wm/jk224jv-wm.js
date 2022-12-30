@@ -128,10 +128,10 @@ customElements.define('jk224jv-wm',
     /**
      * Removes the jk224jv-window component that dispatched the event.
      *
-     * @param {event} event - closeMe event from window component.
+     * @param {*} event - closeMe event from window component.
      */
     #closeWindow (event) {
-      let index = null
+      let index
       for (let entry = 0; entry < this.#openWindows.length; entry++) {
         if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
           index = entry
