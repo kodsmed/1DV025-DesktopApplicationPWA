@@ -69,9 +69,9 @@ customElements.define('jk224jv-window',
         event.stopPropagation()
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
-      this.addEventListener('focusin', () => { this.#window.style.zIndex = 999 })
-      this.addEventListener('click', () => { this.#window.style.zIndex = 999 })
-      this.#window.addEventListener('focusout', () => { this.#window.style.zIndex = parseInt(this.getAttribute('zindex')) })
+      this.addEventListener('focusin', () => this.#getFocus())
+      this.addEventListener('click', () => this.#getFocus())
+      this.#window.addEventListener('focusout', () => this.#looseFocus())
     }
 
     /**
@@ -221,5 +221,32 @@ customElements.define('jk224jv-window',
     #toggleMinimized () {
       this.setAttribute('minimized', true)
       this.dispatchEvent(new CustomEvent('minimizeMe', { bubbles: true, composed: true }))
+    }
+
+    #getFocus () {
+      this.#window.style.zIndex = 999
+      const slot = this.shadowRoot.querySelector('slot')
+      const nodes = slot.assignedNodes()
+
+      nodes.forEach(node => {
+        console.log(node.tagName.slice(0, 7))
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
+          node.setAttribute('ontop', 'true')
+        }
+      })
+    }
+
+    #looseFocus () {
+      this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
+      const slot = this.shadowRoot.querySelector('slot')
+      const nodes = slot.assignedNodes()
+
+      nodes.forEach(node => {
+        console.log(node.tagName.slice(0, 7))
+        console.log(node.nodeType)
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
+          node.removeAttribute('ontop')
+        }
+      })
     }
   })

@@ -5,7 +5,8 @@
  * @author Jimmy Karlsson <jk224jv@student.lnu.se>
  * @version 1.0.0
  */
-import './components/jk224jv-input-dialogue/index.js'
+import './components/jk224jv-input-dialogue/'
+import './components/jk224jv-tts/'
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
 const template = document.createElement('template')
 template.innerHTML = `
@@ -13,6 +14,7 @@ template.innerHTML = `
   <div id='container'>
     <div id='messages'>
       <textarea readonly="true"></textarea>
+      <jk224jv-tts></jk224jv-tts>
     </div>
     <jk224jv-input-dialogue minlength="0" maxlength="128" message="" ></jk224jv-input.dialogue>
   </div>
@@ -28,6 +30,7 @@ customElements.define('jk224jv-ws-chat',
     #messageListener
     #username
     #storageAccepted
+    #tts
     /**
      * Create and instance of the element.
      */
@@ -56,6 +59,7 @@ customElements.define('jk224jv-ws-chat',
       }
 
       this.#storageAccepted = this.#getCookie('storageAccepted')
+      this.#tts = this.shadowRoot.querySelector('jk224jv-tts')
     }
 
     /**
@@ -75,13 +79,6 @@ customElements.define('jk224jv-ws-chat',
      * @param {*} newValue - the new value
      */
     attributeChangedCallback (name, oldValue, newValue) {
-    }
-
-    /**
-     * Run once as the component is inserted into the DOM.
-     */
-    connectedCallback () {
-      // get username.
     }
 
     /**
@@ -134,6 +131,10 @@ customElements.define('jk224jv-ws-chat',
       if (this.#clean(msg.type) === 'message' || this.#clean(msg.type) === 'notification') {
         this.#display.textContent += `\n${msg.username}: ${msg.data}` // goes into 'safesink'.
         this.#display.scrollTop = this.#display.scrollHeight
+      }
+      if (this.hasAttribute('ontop')) {
+        // the text content can deal with script... speechesynther not so much.
+        this.#tts.say(this.#clean(msg.data))
       }
     }
 
