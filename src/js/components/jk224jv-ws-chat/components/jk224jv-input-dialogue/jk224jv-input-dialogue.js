@@ -34,7 +34,7 @@ template.innerHTML = `
   <div class="container" part="dialoguebox">
       <p id="input" part="text"></p>
       <form>
-        <input type="text" id="inputUsername" part="dialogueinput" autocomplete="off">
+        <input type="textarea" id="inputUsername" part="dialogueinput" autocomplete="off" rows="1" columns="32">
         <input type="submit" id="submit" part="dialoguebtn" disabled>
       </form>
       <p id="errorText" part="errortext">&nbsp;</p>
