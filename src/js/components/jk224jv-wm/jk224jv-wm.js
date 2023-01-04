@@ -2,8 +2,8 @@
  * The jk224jv-wm component.
  * Creates a window manager.
  * Movable: @since 7d0c96ae
- * Closable: @todo required - not yet implemented
- * Minimizable: @todo extra - not yet implemented
+ * Closable: @since 2c77b5b9
+ * Minimizable: @since badf993b - extra
  * Resizeable: @since 7d0c96ae
  *
  * @author Jimmy Karlsson <jk224jv@student.lnu.se>

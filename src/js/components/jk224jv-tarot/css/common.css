@@ -11,47 +11,17 @@
   box-sizing: border-box;
 }
 
-html{
+.main {
+  padding: 15px;
   font-family: monospace;
   font-size: 16px;
   line-height: 1rem;
   color: var(--color);
-  width: 100%;
-  min-width: 1024px;
-  min-height: 840px;
-  height: 100%;
-}
 
-body {
-  height: 100%;
+
   background: linear-gradient(var(--background-color) 100%, rgba(16, 16, 16, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.03));
 	background-size: 100% 3px, 6px 100%;
   background-position: center;
-  overflow: hidden;
-  display: grid;
-  gap: 15px;
-  grid-template-columns: 100%;
-  grid-template-rows: min-content auto min-content ;
-  grid-template-areas:
-    "header"
-    "main"
-    "footer";
-}
-
-header {
-  grid-area: header;
-  width: 100%;
-}
-
-footer {
-  grid-area: footer;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-}
-main {
-  grid-area: main;
-  height: auto;
 }
 
 .topline{
@@ -105,8 +75,6 @@ canvas,
   border-radius: 15px;
   border-width: 2px;
   border-style: solid;
-  width: 90%;
-  height: calc(80%);
   margin-left: auto;
   margin-right: auto;
 }
@@ -127,11 +95,5 @@ canvas,
 
 .hidden {
   display: none !important;
-}
-
-@media screen and (max-width: 1400px) {
-  canvas{
-    width: 100%;
-  }
 }
 
