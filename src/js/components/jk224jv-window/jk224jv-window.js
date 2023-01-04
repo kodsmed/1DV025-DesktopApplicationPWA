@@ -223,6 +223,9 @@ customElements.define('jk224jv-window',
       this.dispatchEvent(new CustomEvent('minimizeMe', { bubbles: true, composed: true }))
     }
 
+    /**
+     * Handles the window component being clicked in.
+     */
     #getFocus () {
       this.#window.style.zIndex = 999
       const slot = this.shadowRoot.querySelector('slot')
@@ -236,6 +239,9 @@ customElements.define('jk224jv-window',
       })
     }
 
+    /**
+     * Handles the window component loosing focus.
+     */
     #looseFocus () {
       this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
       const slot = this.shadowRoot.querySelector('slot')

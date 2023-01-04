@@ -37,7 +37,6 @@ customElements.define('jk224jv-tts',
       this.#enabled = this.shadowRoot.querySelector('#enabled')
       this.#selector = this.shadowRoot.querySelector('#voices')
       this.#selector.addEventListener('change', () => this.#setSelectedVoice())
-      this.#enabled.addEventListener('change', () => this.#getVoices())
 
       window.setTimeout(this.#getVoices.bind(this), 100)
     }
