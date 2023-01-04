@@ -165,7 +165,7 @@ customElements.define('jk224jv-tarot',
       ctx.font = 'italic 24px monospace'
       ctx.fillText('Jimmy Karlsson', xOrigin, yOringin + 140)
       ctx.font = ' 18px monospace'
-      ctx.strokeText('codesmith - junior apprentice grade', xOrigin, yOringin + 165)
+      ctx.strokeText('codesmith - apprentice grade', xOrigin, yOringin + 165)
       ctx.fillText('Schoolarium : Linnéuniversitetet', xOrigin, yOringin + 190)
       ctx.fillText('Holy Terra', xOrigin, yOringin + 210)
       ctx.fillText('++ Praise the Omnissiah! ++', xOrigin, yOringin + 290)

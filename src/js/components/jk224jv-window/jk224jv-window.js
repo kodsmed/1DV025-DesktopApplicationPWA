@@ -69,6 +69,9 @@ customElements.define('jk224jv-window',
         event.stopPropagation()
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
+      this.addEventListener('focusin', () => { this.#window.style.zIndex = 999 })
+      this.addEventListener('click', () => { this.#window.focus() })
+      this.#window.addEventListener('focusout', () => { this.#window.style.zIndex = parseInt(this.getAttribute('zindex')) })
     }
 
     /**
@@ -101,6 +104,7 @@ customElements.define('jk224jv-window',
             break
           case 'zindex':
             this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
+            this.#window.setAttribute('tabIndex', `${parseInt(this.getAttribute('zindex'))}`)
             break
           case 'xpos':
             this.#window.style.left = this.getAttribute('xpos')

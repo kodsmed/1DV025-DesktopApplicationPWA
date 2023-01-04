@@ -170,7 +170,6 @@ customElements.define('jk224jv-wm',
       windowToAdd.setAttribute('ypos', `${30 * ((this.#openWindows.length) % 10 + 1)}px`)
       windowToAdd.setAttribute('zindex', this.#openWindows.length)
       windowToAdd.setAttribute('dataid', this.#openWindows.length)
-
       const contentToAdd = document.createElement(`jk224jv-${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
 

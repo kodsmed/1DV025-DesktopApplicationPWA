@@ -25,6 +25,11 @@
   display: none !important;
 }
 
+.focused {
+  background-color: rebeccapurple;
+  z-index: 999;
+}
+
 #header {
   height:25px;
   width: 100%;
