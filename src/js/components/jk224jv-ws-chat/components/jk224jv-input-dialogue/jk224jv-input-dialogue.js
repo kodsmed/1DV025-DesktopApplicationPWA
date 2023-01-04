@@ -32,12 +32,12 @@ template.innerHTML = `
     }
   </style>
   <div class="container" part="dialoguebox">
-    <form>
       <p id="input" part="text"></p>
+      <form>
         <input type="text" id="inputUsername" part="dialogueinput" autocomplete="off">
         <input type="submit" id="submit" part="dialoguebtn" disabled>
+      </form>
       <p id="errorText" part="errortext">&nbsp;</p>
-    </form>
   </div>
 `
 
@@ -99,7 +99,10 @@ customElements.define('jk224jv-input-dialogue',
 
       // set listeners
       this.#input.addEventListener('input', (event) => this.#verifyInput())
-      this.#submit.addEventListener('click', (event) => this.#submitted(event))
+      this.shadowRoot.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault()
+        this.#submitted(event)
+      })
 
       // testing listener - uncomment to enable.
       // this.addEventListener('inputReceived', (event) => { console.log(event.detail) })
@@ -166,7 +169,6 @@ customElements.define('jk224jv-input-dialogue',
      */
     #submitted (event) {
       this.#submit.disabled = true
-      event.preventDefault()
       this.dispatchEvent(new window.CustomEvent('inputReceived', { bubbles: true, composed: true, detail: this.#input.value }))
       this.#input.value = ''
     }
