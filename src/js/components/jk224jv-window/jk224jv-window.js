@@ -70,7 +70,7 @@ customElements.define('jk224jv-window',
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
       this.addEventListener('focusin', () => { this.#window.style.zIndex = 999 })
-      this.addEventListener('click', () => { this.#window.focus() })
+      this.addEventListener('click', () => { this.#window.style.zIndex = 999 })
       this.#window.addEventListener('focusout', () => { this.#window.style.zIndex = parseInt(this.getAttribute('zindex')) })
     }
 
