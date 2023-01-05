@@ -248,8 +248,7 @@ customElements.define('jk224jv-window',
       const nodes = slot.assignedNodes()
 
       nodes.forEach(node => {
-        console.log(node.tagName.slice(0, 7))
-        console.log(node.nodeType)
+        // I dont know what sub app is slotted in so I look for any
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
           node.removeAttribute('ontop')
         }
