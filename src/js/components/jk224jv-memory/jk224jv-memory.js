@@ -13,9 +13,13 @@ template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
 <div id="container">
   <div id="gamebox"></div>
-  <div id="results">
-    <p id="lastResult"></p>
-    <ol id="highscore"></ol>
+  <div id="results" class="hidden">
+    <h2 id="lastResult"></h2>
+    <p id="bestPossible"></p>
+    <div class="flexbox">
+      <ol id="highscore"><li>4242</li></ol>
+      <ol id="highscorePreview"><li>262342342</li></ol>
+    </div>
   </div>
   <div id="startup">
     <label>Columns : <select id="columns"></select></label>
@@ -120,8 +124,21 @@ customElements.define('jk224jv-memory',
      * @param {event} event - moemoryWon event.
      */
     #gameWon (event) {
-      this.#gamebox.removeChild(this.#gamebox.firstChild)
-      this.#startup.querySelector('#startup').classList.toggle('hidden')
+      console.log('event recieved')
+      const rows = this.#gamebox.firstChild.getAttribute('rows')
+      const cols = this.#gamebox.firstChild.getAttribute('columns')
+      while (this.#gamebox.firstChild) {
+        this.#gamebox.removeChild(this.#gamebox.firstChild)
+      }
+
+      this.#startup.classList.toggle('hidden')
+      this.#results.classList.toggle('hidden')
+
+      this.#results.querySelector('#lastResult').textContent =
+      `Congratulations! You finnished the game in ${event.detail.moves} moves.`
+
+      this.#results.querySelector('#bestPossible').textContent =
+      `Best possible result for your game was ${(cols * rows) / 2} moves.`
     }
 
     /**

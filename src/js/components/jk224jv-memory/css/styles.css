@@ -1,3 +1,14 @@
+* {
+  margin: 5px;
+}
+
 .hidden {
   display: none;
+}
+
+
+
+.flexbox {
+  display: flex;
+  justify-content: space-evenly;
 }

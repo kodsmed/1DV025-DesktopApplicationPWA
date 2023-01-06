@@ -264,6 +264,7 @@ customElements.define('jk224jv-memorygame',
       this.#flippedTwo = undefined
       this.#foundPairs++
       if (this.#foundPairs === ((this.#settings.columns * this.#settings.rows) / 2)) {
+        console.log('event fires')
         this.dispatchEvent(new CustomEvent('memoryWon', {
           bubbles: true,
           composed: true,
