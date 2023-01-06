@@ -3,10 +3,15 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .flexbox {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
+}
+
+#container {
+  width: calc(100% - 10px);
+  height: calc(100% - 45px);
 }

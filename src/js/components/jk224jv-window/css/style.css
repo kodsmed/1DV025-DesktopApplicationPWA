@@ -70,3 +70,14 @@
   border: 1px solid black;
   font-size: 14px;
 }
+
+#slotwrapper {
+  width: 100%;
+  height: 100%;
+}
+
+slot {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

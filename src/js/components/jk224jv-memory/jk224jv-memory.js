@@ -19,7 +19,7 @@ template.innerHTML = `
     <p id="bestPossible"></p>
     <jk224jv-highscore></jk224jv-highscore>
   </div>
-  <div id="startup">
+  <div id="startup" class="flexbox">
     <label>Columns : <select id="columns"></select></label>
     <label>Rows : <select id="rows"></select></label>
     <label>Enable preview : <input type="checkbox" id="preview">

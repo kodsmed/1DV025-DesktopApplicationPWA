@@ -23,7 +23,9 @@ template.innerHTML = `
         <button class='button-6' id='close'>X</button>
       </div>
     </div>
-    <slot name="window-content"></slot>
+    <div id="slotwrapper">
+      <slot name="window-content"></slot>
+    </div>
   </div>
 `
 
