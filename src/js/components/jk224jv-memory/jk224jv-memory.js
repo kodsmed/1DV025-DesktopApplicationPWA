@@ -1,4 +1,5 @@
 import './components/jk224jv-memorygame/'
+import './components/jk224jv-highscore/'
 /**
  * Class and module for jk224jv-memory.
  * A wrapper that handles new game size selection and gameresults.
@@ -16,10 +17,7 @@ template.innerHTML = `
   <div id="results" class="hidden">
     <h2 id="lastResult"></h2>
     <p id="bestPossible"></p>
-    <div class="flexbox">
-      <ol id="highscore"><li>4242</li></ol>
-      <ol id="highscorePreview"><li>262342342</li></ol>
-    </div>
+    <jk224jv-highscore></jk224jv-highscore>
   </div>
   <div id="startup">
     <label>Columns : <select id="columns"></select></label>
@@ -27,7 +25,8 @@ template.innerHTML = `
     <label>Enable preview : <input type="checkbox" id="preview">
     <button id="start">Start</button>
   </div>
-</div>`
+</div>
+`
 
 customElements.define('jk224jv-memory',
 /**
@@ -109,6 +108,9 @@ customElements.define('jk224jv-memory',
      */
     #insertGame () {
       this.#startup.classList.toggle('hidden')
+      if (!this.#results.classList.contains('hidden')) { // if re-run.
+        this.#results.classList.toggle('hidden')
+      }
       const gameToAdd = document.createElement('jk224jv-memorygame')
       gameToAdd.setAttribute('columns', this.#columns.value)
       gameToAdd.setAttribute('rows', this.#rows.value)
@@ -127,6 +129,7 @@ customElements.define('jk224jv-memory',
       console.log('event recieved')
       const rows = this.#gamebox.firstChild.getAttribute('rows')
       const cols = this.#gamebox.firstChild.getAttribute('columns')
+      const preview = this.#gamebox.firstChild.hasAttribute('preview')
       while (this.#gamebox.firstChild) {
         this.#gamebox.removeChild(this.#gamebox.firstChild)
       }
@@ -139,6 +142,11 @@ customElements.define('jk224jv-memory',
 
       this.#results.querySelector('#bestPossible').textContent =
       `Best possible result for your game was ${(cols * rows) / 2} moves.`
+      if (this.#datastorage) {
+        console.log('calling addResult')
+        const hs = this.#results.querySelector('jk224jv-highscore')
+        hs.addResult(event.detail.moves, cols, rows, preview)
+      }
     }
 
     /**

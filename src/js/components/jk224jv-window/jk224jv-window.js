@@ -108,7 +108,6 @@ customElements.define('jk224jv-window',
             break
           case 'xpos':
             this.#window.style.left = this.getAttribute('xpos')
-            console.log(this.getAttribute('xpos'))
             break
           case 'ypos':
             this.#window.style.top = this.getAttribute('ypos')
@@ -232,7 +231,6 @@ customElements.define('jk224jv-window',
       const nodes = slot.assignedNodes()
 
       nodes.forEach(node => {
-        console.log(node.tagName.slice(0, 7))
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
           node.setAttribute('ontop', 'true')
         }

@@ -90,7 +90,6 @@ customElements.define('jk224jv-wm',
      * @param {event} event - minimizeMe from window component.
      */
     #minimizeHandler (event) {
-      console.log(`${event.target.getAttribute('dataid')} minimized`)
       let index
       for (let entry = 0; entry < this.#openWindows.length; entry++) {
         if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
@@ -111,7 +110,6 @@ customElements.define('jk224jv-wm',
      * @param {event} event - restoreClicked event from dock.
      */
     #restoreHandler (event) {
-      console.log(event.detail)
       const affectedWindow = this.#surface.querySelector(`[dataid = "${event.detail}"]`)
       affectedWindow.removeAttribute('minimized')
 
@@ -151,7 +149,6 @@ customElements.define('jk224jv-wm',
      * @param {event} event - startNew event from dock component.
      */
     #startNewHandler (event) {
-      console.log(event.detail)
       const windowToAdd = document.createElement('jk224jv-window')
       if (this.#openTitles[event.detail]) {
         this.#openTitles[event.detail]++
