@@ -80,6 +80,7 @@ customElements.define('jk224jv-tarot',
      */
     connectedCallback () {
       this.#applySettings()
+      this.dispatchEvent(new CustomEvent('noResize', { bubbles: true, composed: true }))
     }
 
     /**

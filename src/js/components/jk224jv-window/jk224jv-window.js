@@ -72,6 +72,10 @@ customElements.define('jk224jv-window',
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
       this.addEventListener('click', (event) => this.#gotClicked(event))
+      window.addEventListener('noResize', (event) => {
+        console.log('registered')
+        this.#maximize.setAttribute('disabled', true)
+      })
     }
 
     /**
