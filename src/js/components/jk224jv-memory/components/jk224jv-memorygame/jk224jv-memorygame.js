@@ -14,9 +14,9 @@ template.innerHTML = `
 
 </div>`
 
-customElements.define('jk224jv-memory',
+customElements.define('jk224jv-memorygame',
 /**
- * Represents the memory game.
+ * Represents the memorygame.
  */
   class extends HTMLElement {
   /**
