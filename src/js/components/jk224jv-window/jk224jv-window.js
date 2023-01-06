@@ -69,9 +69,7 @@ customElements.define('jk224jv-window',
         event.stopPropagation()
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
-      this.addEventListener('focusin', () => this.#getFocus())
-      this.addEventListener('click', () => this.#getFocus())
-      this.#window.addEventListener('focusout', () => this.#looseFocus())
+      this.addEventListener('click', (event) => this.#gotClicked(event))
     }
 
     /**
@@ -103,7 +101,7 @@ customElements.define('jk224jv-window',
             this.#header.querySelector('p').textContent = newValue
             break
           case 'zindex':
-            this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
+            this.#window.style.zIndex = parseInt(newValue)
             this.#window.setAttribute('tabIndex', `${parseInt(this.getAttribute('zindex'))}`)
             break
           case 'xpos':
@@ -223,33 +221,14 @@ customElements.define('jk224jv-window',
     }
 
     /**
-     * Handles the window component being clicked in.
+     * Handles the window component being anywhere inside.
+     * Sent to WM to get new Z-index.
+     *
+     * @param {event} event - click.
      */
-    #getFocus () {
-      this.#window.style.zIndex = 999
-      const slot = this.shadowRoot.querySelector('slot')
-      const nodes = slot.assignedNodes()
-
-      nodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
-          node.setAttribute('ontop', 'true')
-        }
-      })
-    }
-
-    /**
-     * Handles the window component loosing focus.
-     */
-    #looseFocus () {
-      this.#window.style.zIndex = parseInt(this.getAttribute('zindex'))
-      const slot = this.shadowRoot.querySelector('slot')
-      const nodes = slot.assignedNodes()
-
-      nodes.forEach(node => {
-        // I dont know what sub app is slotted in so I look for any
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
-          node.removeAttribute('ontop')
-        }
-      })
+    #gotClicked (event) {
+      event.stopPropagation()
+      event.preventDefault()
+      this.dispatchEvent(new CustomEvent('clickedIn', { bubbles: true, composed: true, detail: this.getAttribute('dataid') }))
     }
   })

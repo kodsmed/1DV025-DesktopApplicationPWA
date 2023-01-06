@@ -57,6 +57,7 @@ customElements.define('jk224jv-wm',
       window.addEventListener('restoreClicked', this.#restoreHandler.bind(this))
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
       window.addEventListener('startNew', (event) => this.#startNewHandler(event))
+      this.#surface.addEventListener('clickedIn', this.#focusHandler.bind(this))
 
       if (!document.cookie.length > 0) {
         this.#dataConcent = confirm('Everyone loves to deal with these, but dataprotection laws mandates your approval for the WindowManager to store your data.\n\n Whithout this permission the application will still work, it will just be dumber.\n\n Stored data concists of windowstates, username and cache.  Is this acceptable? (ok to accept)')
@@ -166,6 +167,7 @@ customElements.define('jk224jv-wm',
       windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
       windowToAdd.setAttribute('ypos', `${30 * ((this.#openWindows.length) % 10 + 1)}px`)
       windowToAdd.setAttribute('zindex', this.#openWindows.length)
+      windowToAdd.setAttribute('datazdefault', this.#openWindows.length)
       windowToAdd.setAttribute('dataid', this.#openWindows.length)
       const contentToAdd = document.createElement(`jk224jv-${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
@@ -182,5 +184,30 @@ customElements.define('jk224jv-wm',
 
       windowToAdd.appendChild(contentToAdd)
       this.#surface.appendChild(windowToAdd)
+    }
+
+    /**
+     * Handles the window component loosing focus.
+     *
+     * @param {event} event - clickedIn event.
+     */
+    #focusHandler (event) {
+      // is the clicked item a window element?`
+      if (!event.target.matches('jk224jv-window')) {
+        return
+      }
+      console.log('focus running')
+      // restore all
+      const allWindowElements = this.shadowRoot.querySelectorAll('jk224jv-window')
+      allWindowElements.forEach(element => {
+        const defaultValue = element.getAttribute('datazdefault')
+        console.log(defaultValue)
+        element.style.zIndex = defaultValue
+        element.setAttribute('zindex', defaultValue)
+      })
+
+      // the clicked div should be on the top.
+      event.target.style.zIndex = 999
+      event.target.setAttribute('zindex', 999)
     }
   })
