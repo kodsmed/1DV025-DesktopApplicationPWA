@@ -89,10 +89,10 @@ customElements.define('jk224jv-memory',
      */
     connectedCallback () {
       // populate the selectors
-      for (let col = 2; col < 11; col++) {
+      for (let col = 1; col < 6; col++) {
         const optionToAdd = document.createElement('option')
-        optionToAdd.setAttribute('value', (col))
-        optionToAdd.textContent = `${col}`
+        optionToAdd.setAttribute('value', (col * 2))
+        optionToAdd.textContent = `${col * 2}`
         this.#columns.appendChild(optionToAdd)
       }
       for (let row = 2; row < 5; row++) {

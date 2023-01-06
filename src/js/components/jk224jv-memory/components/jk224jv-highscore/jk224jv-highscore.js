@@ -12,7 +12,7 @@ const template = document.createElement('template')
 template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
 <div id="container">
-  <div id="results" class="flexbox hidden">
+  <div id="results" class="flexbox">
     <div>
       <h3 id="hNoPreview"></h3>
       <ol id="olNoPreview"></ol>
@@ -22,7 +22,7 @@ template.innerHTML = `
       <ol id="olWithPreview"></ol>
     </div>
   </div>
-  <div id="inputbox" class="flexbox">
+  <div id="inputContainer" class="flexbox">
   </div>
 </div>
 `
@@ -43,6 +43,20 @@ customElements.define('jk224jv-highscore',
      * @param {string} username
      */
     #result
+
+    /**
+     * Used to scramble / unscramble
+     */
+    #key
+
+    /**
+     * HTML Element shortcuts.
+     */
+    #listPreview
+    #hPreview
+    #listNoPreview
+    #hNoPreview
+    #inputContainer
     /**
      * Create an instance of the element.
      */
@@ -53,7 +67,15 @@ customElements.define('jk224jv-highscore',
         .appendChild(template.content.cloneNode(true))
 
       // set the shortcuts
+      this.#listPreview = this.shadowRoot.querySelector('#olWithPreview')
+      this.#inputContainer = this.shadowRoot.querySelector('#inputContainer')
+      this.#listNoPreview = this.shadowRoot.querySelector('#olNoPreview')
+      this.#hNoPreview = this.shadowRoot.querySelector('#hNoPreview')
+      this.#hPreview = this.shadowRoot.querySelector('#hWithPreview')
+
+      // set variables
       this.#result = {}
+      this.#key = 'Life Univerce and Everything: 42'
       // set listeners
       this.addEventListener('inputReceived', (event) => this.#gotNickname(event))
     }
@@ -65,17 +87,53 @@ customElements.define('jk224jv-highscore',
      */
     async #gotNickname (event) {
       this.#result.username = event.detail
-      const box = this.shadowRoot.querySelector('#inputbox')
-      while (box.firstChild) {
-        box.removeChild(box.firstChild)
+      let resultObject = {}
+      while (this.#inputContainer.firstChild) {
+        this.#inputContainer.removeChild(this.#inputContainer.firstChild)
       }
       const previousResults = window.localStorage.getItem('jk224jv-memory-hs') ?? false
       if (previousResults) {
-        const unscrabled = this.#unscramble(previousResults)
-        const resultObject = await JSON.parse(unscrabled)
-        const resultArray = resultObject[`${this.#result.columns}x${this.#result.rows}false`] ?? []
-        const resultArrayPreview = resultObject[`${this.#result.columns}x${this.#result.rows}true`] ?? []
+        const unscrabled = this.#unscramble(previousResults, this.#key)
+        resultObject = await JSON.parse(unscrabled)
       }
+      const fallback = []
+      for (let i = 0; i < 5; i++) {
+        fallback.push({ username: '-', moves: 9999 })
+      }
+
+      // get any previous results... or a default if noone played with those settings before.
+      const resultArray = resultObject[`${this.#result.columns}x${this.#result.rows}false`] ?? Array.from(fallback)
+      const resultArrayPreview = resultObject[`${this.#result.columns}x${this.#result.rows}true`] ?? Array.from(fallback)
+
+      // add this result to the propper array and resort it.
+      const pushObject = { username: this.#result.username, moves: this.#result.moves }
+      if (this.#result.preview === true) {
+        resultArrayPreview.push(pushObject)
+      } else {
+        resultArray.push(pushObject)
+      }
+      const sortedArrayPreview = this.#sortEntries(resultArrayPreview)
+      const sortedArray = this.#sortEntries(resultArray)
+
+      this.#hNoPreview.textContent = `${this.#result.columns} x ${this.#result.rows}`
+      for (let i = 0; i < sortedArray.length; i++) {
+        const liToAdd = document.createElement('li')
+        liToAdd.textContent = `${sortedArray[i].username} : ${sortedArray[i].moves} moves`
+        this.#listNoPreview.appendChild(liToAdd)
+      }
+
+      this.#hPreview.textContent = `${this.#result.columns} x ${this.#result.rows} with preview`
+      for (let i = 0; i < sortedArrayPreview.length; i++) {
+        const liToAdd = document.createElement('li')
+        liToAdd.textContent = `${sortedArrayPreview[i].username} : ${sortedArrayPreview[i].moves} moves`
+        this.#listPreview.appendChild(liToAdd)
+      }
+
+      resultObject[`${this.#result.columns}x${this.#result.rows}false`] = sortedArray
+      resultObject[`${this.#result.columns}x${this.#result.rows}true`] = sortedArrayPreview
+      const jsonString = await JSON.stringify(resultObject)
+      const scrambledString = this.#scramble(jsonString, this.#key)
+      window.localStorage.setItem('jk224jv-memory-hs', scrambledString)
     }
 
     /**
@@ -87,13 +145,13 @@ customElements.define('jk224jv-highscore',
      * @param {boolean} Preview - was preview on? true||false.
      */
     addResult (Moves, Cols, Rows, Preview) {
-      console.log('running addResult')
+      this.#clearResult()
+
       // insert input element to get username.
-      const container = this.shadowRoot.querySelector('#inputbox')
       const inputToAdd = document.createElement('jk224jv-input')
       inputToAdd.setAttribute('message', 'Your name for the highscore?')
       inputToAdd.setAttribute('minlength', '1')
-      container.appendChild(inputToAdd)
+      this.#inputContainer.appendChild(inputToAdd)
       this.#result = { moves: Moves, columns: Cols, rows: Rows, preview: Preview, username: null }
     }
 
@@ -137,5 +195,34 @@ customElements.define('jk224jv-highscore',
         unscrambledString += String.fromCharCode(stringChar - keyChar)
       }
       return unscrambledString
+    }
+
+    /**
+     * Sort entries by moves and returns the lowest 5.
+     *
+     * @param {object[]} obj - { username: {string}, moves: {number} }
+     * @returns {object[]} sorted array length 5
+     */
+    #sortEntries (obj) {
+      obj.sort((a, b) => (a.moves > b.moves) ? 1 : ((b.moves > a.moves) ? -1 : 0))
+      while (obj.length > 5) {
+        obj.pop()
+      }
+      return JSON.parse(JSON.stringify(obj))
+    }
+
+    /**
+     * Resets the result area.
+     */
+    #clearResult () {
+      console.log('running clearResult')
+      while (this.#listPreview.firstChild) {
+        this.#listPreview.removeChild(this.#listPreview.firstChild)
+      }
+      this.#hPreview.textContent = ''
+      while (this.#listNoPreview.firstChild) {
+        this.#listNoPreview.removeChild(this.#listNoPreview.firstChild)
+      }
+      this.#hNoPreview.textContent = ''
     }
   })
