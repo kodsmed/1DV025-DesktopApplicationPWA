@@ -94,7 +94,7 @@ customElements.define('jk224jv-tarot',
       const container = this.shadowRoot.querySelector('.main')
       container.style.width = '1024px'
       container.style.color = 'lime'
-      container.style.backgroundColor = 'black'
+      container.style.backgroundColor = 'rgba(9, 9, 9, 1)'
       container.width = 1024
       container.style.height = '640px'
       container.height = 640
@@ -381,7 +381,7 @@ customElements.define('jk224jv-tarot',
       for (let i = 0; i < this.#pulledCards.length; i++) {
         this.#writeCard(
           Math.floor((0.5 * xDistance) + (1.5 * xDistance * i)),
-          tarotDeck.settings.canvasHeight * 0.15 + ((i % 2) * 20),
+          tarotDeck.settings.canvasHeight * 0.15,
           this.#pulledCards[i], significance[i])
       }
     }

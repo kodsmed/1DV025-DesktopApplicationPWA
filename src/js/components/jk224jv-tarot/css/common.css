@@ -45,7 +45,7 @@ div.buttons button {
   width: 150px;
   color: var(--color);
   font-weight: bold;
-  background-color: inherit;
+  background-color: black;
   border-color: var(--color);
   border-radius: 15px;
   border-width: 2px;
@@ -67,7 +67,7 @@ p.line {
 canvas,
 .credits {
   display: block;
-  background-color: inherit;
+  background-color: black;
   border-color: var(--color);
   box-shadow: 2px 2px 2px var(--color);
   border-radius: 15px;
