@@ -196,12 +196,10 @@ customElements.define('jk224jv-wm',
       if (!event.target.matches('jk224jv-window')) {
         return
       }
-      console.log('focus running')
       // restore all
       const allWindowElements = this.shadowRoot.querySelectorAll('jk224jv-window')
       allWindowElements.forEach(element => {
         const defaultValue = element.getAttribute('datazdefault')
-        console.log(defaultValue)
         element.style.zIndex = defaultValue
         element.setAttribute('zindex', defaultValue)
       })
