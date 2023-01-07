@@ -1,36 +1,41 @@
-# &lt;jk224jv-window&gt;
+# &lt;jk224jv-dock&gt;
 
-A web component that presents a os-style program box aka "window" to the user.
+The jk224jv-dock component creates a taskbar with buttons to start new applications and buttons for each minimized application.
 
-## Slots
-
-1. name = 'window-content', content that should fill the window.
-
-## Attributes
-
-### `height`
-
-CSS value attribute, if present, sets the height of the component.
-Default = "300px"
-
-### `width`
-
-CSS value attribute, if present, sets the width of the component.
-Default = "500px"
-
-### `title`
-
-A string attribute, if presents, sets the titletext in the window header.
-Default = "Window"
+It includes listeners for the startNew and restoreClicked events, and a update method to refresh the taskbar with new minimized windows information.
 
 ## Events
 
+`startNew`: Dispatched when the user clicks the button to start a new application. The event includes the dataid of the clicked button in its detail.
+
+`restoreClicked`: Dispatched when the user clicks a minimized application button in the taskbar. The event includes the dataid of the clicked button in its detail.
+
 ## Public methods
+
+`update(mWins: object[])`: Updates the taskbar with the given minimized windows information.
 
 ## Example
 
-```javascript
-// enter code here
+```HTML
+// in head:
+<script type="module" src="./~filepath/jk224jv-dock/index.js"></script>
+
+// in body:
+<jk224jv-dock id="dock"></jk224jv-dock>
 ```
 
-![Example](./images/example.gif)
+```javascript
+import './jk224jv-dock.js'
+const dock = document.createElement('jk224jv-dock')
+document.querySelector('body').appendChild(dock)
+const placedDock = document.querySelector('jk224jv-dock')
+
+const minimizedWindows = []
+const minimizedWindowData = {
+  title: myVar.title,
+  dataid: myVar.dataid
+}
+minimizedWindows.push(minimizedWindowData)
+
+placedDock.update(minimizedWindows)
+```
