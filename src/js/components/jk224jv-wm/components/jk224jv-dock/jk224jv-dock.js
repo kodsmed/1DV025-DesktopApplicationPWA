@@ -80,7 +80,7 @@ customElements.define('jk224jv-dock',
      */
     connectedCallback () {
       // inserts the 'start a new app' buttons.
-      const files = ['ws-chat', 'memory', 'tarot']
+      const files = ['jk224jv-ws-chat', 'jk224jv-memory', 'jk224jv-tarot']
       files.forEach(file => {
         const IMG_URL = (new URL(`./img/${file}.ico`, import.meta.url))
         const newButton = document.createElement('button')

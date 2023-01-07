@@ -1,14 +1,7 @@
 # &lt;jk224jv-wm&gt;
 
-A web component that presents a os-style desktop GUI to the user.
+A window manager that can open, close, minimize and restore windows. The window manager also has a dock that displays minimized windows. The window manager supports storing data in the form of cookies and localstorage to improve user experience.
 
-## Slots
-
-## Attributes
-
-## Events
-
-## Public methods
 
 ## Example
 

@@ -2,9 +2,9 @@
  * The jk224jv-window component.
  * Creates a windows-like box (div) with the following capabilities:
  * Movable: @since 7d0c96ae
- * Closable: @todo required
- * Minimizable: @todo extra
- * Resizeable: @since 7d0c96ae
+ * Closable: @since 2c77b5b9
+ * Minimizable: @since badf993b - extra
+ * Resizeable: @since 7d0c96ae - extra
  *
  * @author Jimmy Karlsson <jk224jv@student.lnu.se>
  * @version 1.0.0
@@ -72,8 +72,8 @@ customElements.define('jk224jv-window',
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
       this.addEventListener('click', (event) => this.#gotClicked(event))
-      window.addEventListener('noResize', (event) => {
-        console.log('registered')
+      this.addEventListener('noResize', (event) => {
+        event.stopPropagation(false)
         this.#maximize.setAttribute('disabled', true)
       })
     }

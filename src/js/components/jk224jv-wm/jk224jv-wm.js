@@ -1,21 +1,18 @@
 /**
  * The jk224jv-wm component.
  * Creates a window manager.
- * Movable: @since 7d0c96ae
- * Closable: @since 2c77b5b9
- * Minimizable: @since badf993b - extra
- * Resizeable: @since 7d0c96ae
  *
  * @author Jimmy Karlsson <jk224jv@student.lnu.se>
  * @version 1.0.0
  */
-
+import './components/jk224jv-window'
+import './components/jk224jv-dock'
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
 const template = document.createElement('template')
 template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='desktop'>
-    <div id='header'>a</div>
+    <div id='header'> </div>
     <div id='surface'>
     </div>
     <jk224jv-dock id="dock"></jk224jv-dock>
@@ -24,7 +21,7 @@ template.innerHTML = `
 
 customElements.define('jk224jv-wm',
 /**
- * Represents a jk224jv-window element.
+ * Represents a jk224jv-wm element.
  */
   class extends HTMLElement {
     #header
@@ -169,7 +166,7 @@ customElements.define('jk224jv-wm',
       windowToAdd.setAttribute('zindex', this.#openWindows.length)
       windowToAdd.setAttribute('datazdefault', this.#openWindows.length)
       windowToAdd.setAttribute('dataid', this.#openWindows.length)
-      const contentToAdd = document.createElement(`jk224jv-${event.detail}`)
+      const contentToAdd = document.createElement(`${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
 
       const windowData = {
