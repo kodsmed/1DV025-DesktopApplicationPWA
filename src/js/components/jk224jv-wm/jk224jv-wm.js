@@ -15,7 +15,8 @@ template.innerHTML = `
     <div id='header'> </div>
     <div id='surface'>
     </div>
-    <jk224jv-dock id="dock"></jk224jv-dock>
+    <div id="dockcontainer">
+    </div>
   </div>
 `
 
@@ -32,6 +33,8 @@ customElements.define('jk224jv-wm',
     #openWindows
     #openTitles
     #minimizedWindows
+    #windowElementType
+    #dockElementType
 
     /**
      * Create and instance of the element.
@@ -44,10 +47,15 @@ customElements.define('jk224jv-wm',
       // get elements in the shadowroot
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
-      this.#dock = this.shadowRoot.querySelector('#dock')
       this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  reference: {HTMLElement}}
       this.#minimizedWindows = []
       this.#openTitles = {}
+
+      // change if you want to use another window component.
+      this.#windowElementType = 'jk224jv-window'
+      // change if you want to use anther dock component.
+      this.#dockElementType ='jk224jv-dock'
+      // Don´t forget imports.
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
@@ -73,6 +81,11 @@ customElements.define('jk224jv-wm',
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
+      const dc = this.shadowRoot.querySelector('#dockcontainer')
+      const dockElement = document.createElement(this.#dockElementType)
+      dockElement.setAttribute('id', 'dock')
+      dc.appendChild(dockElement)
+      this.#dock = this.shadowRoot.querySelector('#dock')
     }
 
     /**
@@ -93,6 +106,10 @@ customElements.define('jk224jv-wm',
         if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
           index = entry
         }
+      }
+      // if not original window component.
+      if (!event.target.hasAttribute('minimized')) {
+        event.target.setAttribute('minimized', true)
       }
       const minimizedWindowData = {
         title: this.#openWindows[index].title,
@@ -147,7 +164,7 @@ customElements.define('jk224jv-wm',
      * @param {event} event - startNew event from dock component.
      */
     #startNewHandler (event) {
-      const windowToAdd = document.createElement('jk224jv-window')
+      const windowToAdd = document.createElement(this.#windowElementType)
       if (this.#openTitles[event.detail]) {
         this.#openTitles[event.detail]++
       } else {
@@ -190,11 +207,11 @@ customElements.define('jk224jv-wm',
      */
     #focusHandler (event) {
       // is the clicked item a window element?`
-      if (!event.target.matches('jk224jv-window')) {
+      if (!event.target.matches('this.#windowElementType')) {
         return
       }
       // restore all
-      const allWindowElements = this.shadowRoot.querySelectorAll('jk224jv-window')
+      const allWindowElements = this.shadowRoot.querySelectorAll(this.#windowElementType)
       allWindowElements.forEach(element => {
         const defaultValue = element.getAttribute('datazdefault')
         element.style.zIndex = defaultValue
