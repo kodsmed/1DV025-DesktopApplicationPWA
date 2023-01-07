@@ -54,7 +54,7 @@ customElements.define('jk224jv-wm',
       // change if you want to use another window component.
       this.#windowElementType = 'jk224jv-window'
       // change if you want to use anther dock component.
-      this.#dockElementType ='jk224jv-dock'
+      this.#dockElementType = 'jk224jv-dock'
       // Don´t forget imports.
 
       // set listeners
