@@ -1,4 +1,4 @@
-# &lt;jk224jv-input-dialogue&gt;
+# &lt;jk224jv-input&gt;
 
 A web component that represents a text input dialogue.
 
@@ -49,7 +49,7 @@ The errortext (p element) is styleable using the part `errortext`.
 ## Example
 
 ```html
-<jk224jv-input-dialogue message="Input your decired username:" buttontext="Sign me up!" minlength="5"></jk224jv-input-dialogue>
+<jk224jv-input message="Input your decired username:" buttontext="Sign me up!" minlength="5"></jk224jv-input>
 ```
 
 ![Example](./images/example.gif)
