@@ -68,7 +68,7 @@ customElements.define('jk224jv-ws-chat',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['']
+      return ['zindex']
     }
 
     /**
@@ -79,6 +79,9 @@ customElements.define('jk224jv-ws-chat',
      * @param {*} newValue - the new value
      */
     attributeChangedCallback (name, oldValue, newValue) {
+      if (name === 'zindex') {
+        this.style.zIndex = parseInt(newValue)
+      }
     }
 
     /**
@@ -132,7 +135,8 @@ customElements.define('jk224jv-ws-chat',
         this.#display.textContent += `\n${msg.username}: ${msg.data}` // goes into 'safesink'.
         this.#display.scrollTop = this.#display.scrollHeight
       }
-      if (this.hasAttribute('ontop')) {
+      console.log(this.getAttribute('zindex'))
+      if (parseInt(this.getAttribute('zindex')) === 999) {
         // the text content can deal with script... speechesynther not so much.
         this.#tts.say(this.#clean(msg.data))
       }

@@ -36,6 +36,8 @@ customElements.define('jk224jv-wm',
     #windowElementType
     #dockElementType
 
+    #moduleLoadRetries
+
     /**
      * Create and instance of the element.
      */
@@ -50,6 +52,7 @@ customElements.define('jk224jv-wm',
       this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  reference: {HTMLElement}}
       this.#minimizedWindows = []
       this.#openTitles = {}
+      this.#moduleLoadRetries = 0
 
       // change if you want to use another window component.
       this.#windowElementType = 'jk224jv-window'
@@ -63,6 +66,11 @@ customElements.define('jk224jv-wm',
       this.#surface.addEventListener('closeMe', this.#closeWindow.bind(this))
       window.addEventListener('startNew', (event) => this.#startNewHandler(event))
       this.#surface.addEventListener('clickedIn', this.#focusHandler.bind(this))
+      window.addEventListener('beforeunload', () => {
+        console.log('beforeunload fires')
+        return 'Life Universe and Everything.'
+        // save the state here.
+      })
 
       if (!document.cookie.length > 0) {
         this.#dataConcent = confirm('Everyone loves to deal with these, but dataprotection laws mandates your approval for the WindowManager to store your data.\n\n Whithout this permission the application will still work, it will just be dumber.\n\n Stored data concists of windowstates, username and cache.  Is this acceptable? (ok to accept)')
@@ -163,7 +171,19 @@ customElements.define('jk224jv-wm',
      *
      * @param {event} event - startNew event from dock component.
      */
-    #startNewHandler (event) {
+    async #startNewHandler (event) {
+      // Load its module if not loaded.
+      const module = await import(`../${event.detail}`)
+
+      console.log(module)
+      if (!module) {
+        // if that failed... retry
+        this.#moduleLoadRetries++
+        console.log(`reload tries: ${this.#moduleLoadRetries}`)
+        if (this.#moduleLoadRetries < 3) {
+          this.#startNewHandler(event)
+        } else return false
+      }
       const windowToAdd = document.createElement(this.#windowElementType)
       if (this.#openTitles[event.detail]) {
         this.#openTitles[event.detail]++
@@ -207,7 +227,7 @@ customElements.define('jk224jv-wm',
      */
     #focusHandler (event) {
       // is the clicked item a window element?`
-      if (!event.target.matches('this.#windowElementType')) {
+      if (!event.target.matches(this.#windowElementType)) {
         return
       }
       // restore all

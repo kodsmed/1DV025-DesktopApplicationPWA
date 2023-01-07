@@ -109,6 +109,7 @@ customElements.define('jk224jv-window',
           case 'zindex':
             this.#window.style.zIndex = parseInt(newValue)
             this.#window.setAttribute('tabIndex', `${parseInt(this.getAttribute('zindex'))}`)
+            this.#passToChild(parseInt(newValue)) // pass to slotted element.
             break
           case 'xpos':
             this.#window.style.left = this.getAttribute('xpos')
@@ -234,7 +235,23 @@ customElements.define('jk224jv-window',
      */
     #gotClicked (event) {
       event.stopPropagation()
-      event.preventDefault()
       this.dispatchEvent(new CustomEvent('clickedIn', { bubbles: true, composed: true, detail: this.getAttribute('dataid') }))
+    }
+
+    /**
+     * Pass the zindex from the parent window down to slotted element.
+     * This is if the slotted element need to know if its ontop or not.
+     *
+     * @param {number} number - zindex of parent.
+     */
+    #passToChild (number) {
+      const slot = this.shadowRoot.querySelector('slot')
+      const nodes = slot.assignedNodes()
+
+      nodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
+          node.setAttribute('zindex', `${number}`)
+        }
+      })
     }
   })
