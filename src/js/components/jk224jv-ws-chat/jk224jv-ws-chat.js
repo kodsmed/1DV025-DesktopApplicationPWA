@@ -135,9 +135,10 @@ customElements.define('jk224jv-ws-chat',
         this.#display.textContent += `\n${msg.username}: ${msg.data}` // goes into 'safesink'.
         this.#display.scrollTop = this.#display.scrollHeight
       }
+
       if (parseInt(this.getAttribute('zindex')) === 999) {
         // the text content can deal with script... speechesynther not so much.
-        this.#tts.say(this.#clean(msg.data))
+        this.#tts.say(this.#cleanForTTS(msg.data))
       }
     }
 
@@ -149,6 +150,16 @@ customElements.define('jk224jv-ws-chat',
      */
     #clean (unclean) {
       return unclean.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F')
+    }
+
+    /**
+     * Cleans data specificly to make sence in TTS.
+     *
+     * @param {string} unclean - untrusted data.
+     * @returns {string} escaped.
+     */
+    #cleanForTTS (unclean) {
+      return unclean.replace(/</g, '').replace(/>/g, '').replace(/&/g, ' and ').replace(/"/g, ' quote ').replace(/'/g, ' slash ').replace(/\//g, ' backslash ')
     }
 
     /**
