@@ -45,7 +45,6 @@ customElements.define('jk224jv-tts',
      * Run once as the component is connected to the DOM.
      */
     connectedCallback () {
-      console.log('connected callback running')
       if ('speechSynthesis' in window) {
         // special case for edge
         window.setTimeout(this.#getVoices.bind(this), 100)
@@ -64,7 +63,6 @@ customElements.define('jk224jv-tts',
      * Gets the 'voices' available on the browser and populates the select element.
      */
     #getVoices () {
-      console.log('connected getVoices running')
       const voices = speechSynthesis.getVoices()
       this.#selector = this.shadowRoot.querySelector('#voices')
 
@@ -97,7 +95,6 @@ customElements.define('jk224jv-tts',
      */
     #setSelectedVoice () {
       const element = this.shadowRoot.querySelector('#voices')
-      console.log('setSelectedVoice running')
       this.#myVoice = speechSynthesis.getVoices().filter(function (voice) { return voice.name === element.value })[0]
     }
 
