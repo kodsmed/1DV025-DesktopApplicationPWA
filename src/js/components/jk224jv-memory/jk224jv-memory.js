@@ -76,9 +76,6 @@ customElements.define('jk224jv-memory',
       this.#results = this.shadowRoot.querySelector('#results')
       this.#startup = this.shadowRoot.querySelector('#startup')
 
-      // if there is cookies, storage have been accepted.
-      this.#datastorage = this.#getCookie('storageAccepted')
-
       // set listeners
       this.#start.addEventListener('click', () => this.#insertGame())
       this.addEventListener('memoryWon', (event) => this.#gameWon(event))
@@ -101,6 +98,29 @@ customElements.define('jk224jv-memory',
         optionToAdd.textContent = `${row}`
         this.#rows.appendChild(optionToAdd)
       }
+    }
+
+    /**
+     * Listen to these attrbutes set in html.
+     *
+     * @returns {string[]} A string array of attributes to monitor.
+     */
+    static get observedAttributes () {
+      return ['zindex', 'data-storage']
+    }
+
+    /**
+     * Called when observed attribute(s) changes.
+     *
+     * @param {string} name - the attributes name
+     * @param {*} oldValue - the previous value
+     * @param {*} newValue - the new value
+     */
+    attributeChangedCallback (name, oldValue, newValue) {
+      if (name === 'zindex') {
+        this.style.zIndex = parseInt(newValue)
+      }
+      this.#datastorage = this.hasAttribute('data-storage')
     }
 
     /**

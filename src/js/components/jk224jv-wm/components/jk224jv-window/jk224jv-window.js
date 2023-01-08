@@ -92,7 +92,7 @@ customElements.define('jk224jv-window',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['width', 'height', 'title', 'zindex', 'xpos', 'ypos', 'minimized']
+      return ['width', 'height', 'title', 'zindex', 'xpos', 'ypos', 'minimized', 'data-storage']
     }
 
     /**
@@ -117,7 +117,7 @@ customElements.define('jk224jv-window',
           case 'zindex':
             this.#window.style.zIndex = parseInt(newValue)
             this.#window.setAttribute('tabIndex', `${parseInt(this.getAttribute('zindex'))}`)
-            this.#passToChild(parseInt(newValue)) // pass to slotted element.
+            this.#passToChild('zindex', parseInt(newValue)) // pass to slotted element.
             break
           case 'xpos':
             this.#window.style.left = this.getAttribute('xpos')
@@ -132,6 +132,9 @@ customElements.define('jk224jv-window',
           if (this.#window.classList.contains('minimized')) {
             this.#window.classList.remove('minimized')
           }
+        }
+        if (this.hasAttribute('data-storage')) {
+          this.#passToChild('data-storage', '')
         }
       }
     }
@@ -247,18 +250,18 @@ customElements.define('jk224jv-window',
     }
 
     /**
-     * Pass the zindex from the parent window down to slotted element.
-     * This is if the slotted element need to know if its ontop or not.
+     * Pass the attribute from the parent window down to slotted element.
      *
-     * @param {number} number - zindex of parent.
+     * @param {string} key - attribute of the parent.
+     * @param {*} value - value of parent.
      */
-    #passToChild (number) {
+    #passToChild (key, value) {
       const slot = this.shadowRoot.querySelector('slot')
       const nodes = slot.assignedNodes()
 
       nodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.slice(0, 7) === 'JK224JV') {
-          node.setAttribute('zindex', `${number}`)
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          node.setAttribute(`${key}`, `${value}`)
         }
       })
     }

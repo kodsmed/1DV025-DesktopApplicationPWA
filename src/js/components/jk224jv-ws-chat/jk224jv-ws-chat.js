@@ -82,7 +82,6 @@ customElements.define('jk224jv-ws-chat',
         this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', 'Send me your prefered username')
       }
 
-      this.#storageAccepted = this.#getCookie('storageAccepted')
       this.#tts = this.shadowRoot.querySelector('jk224jv-tts')
     }
 
@@ -92,7 +91,7 @@ customElements.define('jk224jv-ws-chat',
      * @returns {string[]} A string array of attributes to monitor.
      */
     static get observedAttributes () {
-      return ['zindex']
+      return ['zindex', 'data-storage']
     }
 
     /**
@@ -106,6 +105,8 @@ customElements.define('jk224jv-ws-chat',
       if (name === 'zindex') {
         this.style.zIndex = parseInt(newValue)
       }
+      this.#storageAccepted = this.hasAttribute('data-storage')
+      console.log(`storage enabled: ${this.#storageAccepted}`)
     }
 
     /**

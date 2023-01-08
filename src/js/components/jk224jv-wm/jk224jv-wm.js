@@ -227,6 +227,7 @@ customElements.define('jk224jv-wm',
       windowToAdd.setAttribute('zindex', this.#openWindows.length)
       windowToAdd.setAttribute('data-zdefault', this.#openWindows.length)
       windowToAdd.setAttribute('data-id', this.#openWindows.length)
+      windowToAdd.setAttribute('data-storage', '')
       const contentToAdd = document.createElement(`${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
 
