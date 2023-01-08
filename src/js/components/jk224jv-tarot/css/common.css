@@ -56,7 +56,7 @@ div.buttons button {
 
 div.buttons button:hover {
   box-shadow: 3px 3px 3px  var(--color);
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #ffffff26;
 }
 
 

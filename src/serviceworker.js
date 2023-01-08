@@ -1,4 +1,5 @@
 const version = '1.0.3'
+self.offlineMode = false
 
 self.addEventListener('install', event => {
   console.log('ServiceWorker: Has installed version', version)
@@ -18,7 +19,7 @@ self.addEventListener('fetch', event => {
 })
 
 self.addEventListener('message', event => {
-  console.log('ServiceWorker: Got a message')
+  console.log('ServiceWorker: Got a message:', event.data)
   // Handle events from the main application
 })
 
