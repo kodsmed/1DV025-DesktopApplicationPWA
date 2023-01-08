@@ -43,15 +43,15 @@ customElements.define('jk224jv-dock',
       this.#buttons.addEventListener('click', (event) => {
         event.preventDefault()
         event.stopPropagation()
-        if (event.target.dataid) {
-          this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.dataid }))
+        if (event.target.dataId) {
+          this.dispatchEvent(new CustomEvent('startNew', { bubbles: true, composed: true, detail: event.target.dataId }))
         }
       })
       this.#minis.addEventListener('click', (event) => {
         event.preventDefault()
         event.stopPropagation()
-        if (event.target.dataid) {
-          this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.dataid }))
+        if (event.target.dataId) {
+          this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.dataId }))
         }
       })
     }
@@ -68,8 +68,8 @@ customElements.define('jk224jv-dock',
 
       for (let mWin = 0; mWin < mWins.length; mWin++) {
         const newMWRep = document.createElement('button')
-        newMWRep.setAttribute('dataid', mWins[mWin].dataid)
-        newMWRep.dataid = mWins[mWin].dataid
+        newMWRep.setAttribute('data-id', mWins[mWin].dataId)
+        newMWRep.dataId = mWins[mWin].dataId
         newMWRep.textContent = mWins[mWin].title
         this.#minis.appendChild(newMWRep)
       }
@@ -87,9 +87,9 @@ customElements.define('jk224jv-dock',
         const newImage = document.createElement('img')
         newImage.setAttribute('src', IMG_URL)
         newImage.setAttribute('height', '25px')
-        newImage.dataid = file
+        newImage.dataId = file
         newButton.appendChild(newImage)
-        newButton.dataid = file
+        newButton.dataId = file
         this.#buttons.appendChild(newButton)
       })
     }

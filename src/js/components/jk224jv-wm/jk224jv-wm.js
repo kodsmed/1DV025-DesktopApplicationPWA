@@ -49,7 +49,7 @@ customElements.define('jk224jv-wm',
       // get elements in the shadowroot
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
-      this.#openWindows = [] // { title: {string}  dataid: {number}  xPos: {string}  yPos: {string}  zPos: {number}  reference: {HTMLElement}}
+      this.#openWindows = [] // { title: {string}  data-id: {number}  xPos: {string}  yPos: {string}  zPos: {number}  reference: {HTMLElement}}
       this.#minimizedWindows = []
       this.#openTitles = {}
       this.#moduleLoadRetries = 0
@@ -111,7 +111,7 @@ customElements.define('jk224jv-wm',
     #minimizeHandler (event) {
       let index
       for (let entry = 0; entry < this.#openWindows.length; entry++) {
-        if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
+        if (this.#openWindows[entry].dataId === event.target.getAttribute('data-id')) {
           index = entry
         }
       }
@@ -121,7 +121,7 @@ customElements.define('jk224jv-wm',
       }
       const minimizedWindowData = {
         title: this.#openWindows[index].title,
-        dataid: this.#openWindows[index].dataid
+        dataId: this.#openWindows[index].dataId
       }
       this.#minimizedWindows.push(minimizedWindowData)
       this.#dock.update(this.#minimizedWindows)
@@ -133,12 +133,12 @@ customElements.define('jk224jv-wm',
      * @param {event} event - restoreClicked event from dock.
      */
     #restoreHandler (event) {
-      const affectedWindow = this.#surface.querySelector(`[dataid = "${event.detail}"]`)
+      const affectedWindow = this.#surface.querySelector(`[data-id = "${event.detail}"]`)
       affectedWindow.removeAttribute('minimized')
 
       let index
       for (let entry = 0; entry < this.#minimizedWindows.length; entry++) {
-        if (this.#minimizedWindows[entry].dataid === event.detail) {
+        if (this.#minimizedWindows[entry].dataId === event.detail) {
           index = entry
         }
       }
@@ -154,7 +154,7 @@ customElements.define('jk224jv-wm',
     #closeWindow (event) {
       let index
       for (let entry = 0; entry < this.#openWindows.length; entry++) {
-        if (this.#openWindows[entry].dataid === event.target.getAttribute('dataid')) {
+        if (this.#openWindows[entry].dataId === event.target.getAttribute('data-id')) {
           index = entry
         }
       }
@@ -205,14 +205,14 @@ customElements.define('jk224jv-wm',
       windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
       windowToAdd.setAttribute('ypos', `${30 * ((this.#openWindows.length) % 10 + 1)}px`)
       windowToAdd.setAttribute('zindex', this.#openWindows.length)
-      windowToAdd.setAttribute('datazdefault', this.#openWindows.length)
-      windowToAdd.setAttribute('dataid', this.#openWindows.length)
+      windowToAdd.setAttribute('data-zdefault', this.#openWindows.length)
+      windowToAdd.setAttribute('data-id', this.#openWindows.length)
       const contentToAdd = document.createElement(`${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
 
       const windowData = {
         title: windowToAdd.getAttribute('title'),
-        dataid: windowToAdd.getAttribute('dataid'),
+        dataId: windowToAdd.getAttribute('data-id'),
         xPos: windowToAdd.getAttribute('xPos'),
         yPos: windowToAdd.getAttribute('yPos'),
         zPos: windowToAdd.getAttribute('zindex')
@@ -237,7 +237,7 @@ customElements.define('jk224jv-wm',
       // restore all
       const allWindowElements = this.shadowRoot.querySelectorAll(this.#windowElementType)
       allWindowElements.forEach(element => {
-        const defaultValue = element.getAttribute('datazdefault')
+        const defaultValue = element.getAttribute('data-zdefault')
         element.style.zIndex = defaultValue
         element.setAttribute('zindex', defaultValue)
       })

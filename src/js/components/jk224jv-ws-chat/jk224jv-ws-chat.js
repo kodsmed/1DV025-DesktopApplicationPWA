@@ -159,7 +159,7 @@ customElements.define('jk224jv-ws-chat',
      * @returns {string} escaped.
      */
     #cleanForTTS (unclean) {
-      return unclean.replace(/</g, '').replace(/>/g, '').replace(/&/g, ' and ').replace(/"/g, ' quote ').replace(/'/g, ' slash ').replace(/\//g, ' backslash ')
+      return unclean.replace(/</g, '').replace(/>/g, '').replace(/&/g, ' and ').replace(/"/g, ' quote ').replace(/'/g, '').replace(/\//g, ' backslash ')
     }
 
     /**

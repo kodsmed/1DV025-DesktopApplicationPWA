@@ -235,7 +235,7 @@ customElements.define('jk224jv-window',
      */
     #gotClicked (event) {
       event.stopPropagation()
-      this.dispatchEvent(new CustomEvent('clickedIn', { bubbles: true, composed: true, detail: this.getAttribute('dataid') }))
+      this.dispatchEvent(new CustomEvent('clickedIn', { bubbles: true, composed: true, detail: this.getAttribute('data-id') }))
     }
 
     /**
