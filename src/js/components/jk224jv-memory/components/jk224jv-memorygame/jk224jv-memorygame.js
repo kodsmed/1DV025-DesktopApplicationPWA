@@ -57,11 +57,15 @@ customElements.define('jk224jv-memorygame',
       const Settings = {
         columns: 2,
         rows: 2,
-        imgSrcs: []
+        imgElements: []
       }
       this.#settings = Settings
-      for (let image = 0; image < 20; image++) {
-        this.#settings.imgSrcs.push(new URL(`./img/${image}.png`, import.meta.url))
+      for (let image = 0; image < 40; image++) {
+        const el = document.createElement('img')
+        el.setAttribute('alt', Math.floor(image / 2))
+        el.setAttribute('src', (new URL(`./img/${Math.floor(image / 2)}.png`, import.meta.url)))
+        console.log(Math.floor(image / 2))
+        this.#settings.imgElements.push(el)
       }
       this.#grid = this.shadowRoot.querySelector('.container')
       this.#foundPairs = 0
@@ -126,7 +130,8 @@ customElements.define('jk224jv-memorygame',
       })
 
       if (name === 'preview') {
-        this.preview()
+        // give the render a little bit of time to do its thing...
+        window.setTimeout(this.preview.bind(this), 1500)
       }
     }
 
@@ -190,9 +195,7 @@ customElements.define('jk224jv-memorygame',
       this.#cards = this.shadowRoot.querySelectorAll('jk224jv-flipcard')
       this.#shuffle()
       for (let card = 0; card < this.#cards.length; card++) {
-        const el = document.createElement('img')
-        el.setAttribute('alt', Math.floor(card / 2))
-        el.setAttribute('src', this.#settings.imgSrcs[Math.floor(card / 2)])
+        const el = this.#settings.imgElements[card]
         el.setAttribute('slot', 'front-img')
         this.#cards[card].appendChild(el)
         this.#cards[card].setAttribute('tabindex', card)
