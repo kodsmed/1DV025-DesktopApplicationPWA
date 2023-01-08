@@ -100,6 +100,7 @@ customElements.define('jk224jv-wm',
       this.#surface.addEventListener('clickedIn', this.#focusHandler.bind(this))
       window.addEventListener('beforeunload', () => {
         console.log('beforeunload fires')
+        this.#storeCurrentState()
         return 'Life Universe and Everything.'
         // save the state here.
       })
@@ -266,5 +267,24 @@ customElements.define('jk224jv-wm',
       // the clicked div should be on the top.
       event.target.style.zIndex = 999
       event.target.setAttribute('zindex', 999)
+    }
+
+    /**
+     * Looks at all open windows and saves their current states.
+     */
+    async #storeCurrentState () {
+      if (this.#dataConcent) {
+        this.#openWindows = []
+        const allWindowElements = this.shadowRoot.querySelectorAll(this.#windowElementType)
+        allWindowElements.forEach(element => {
+          const openWindow = {}
+          for (const attr of element.attributes) {
+            openWindow[`${attr.name}`] = `${attr.value}`
+          }
+          this.#openWindows.push(openWindow)
+        })
+        const jsonString = await JSON.stringify(this.#openWindows)
+        window.localStorage.setItem('jk224jv-wm', jsonString)
+      }
     }
   })
