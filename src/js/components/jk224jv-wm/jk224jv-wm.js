@@ -172,21 +172,7 @@ customElements.define('jk224jv-wm',
      * @param {event} event - startNew event from dock component.
      */
     async #startNewHandler (event) {
-      // Load its module if not loaded. It will only be loaded once so... we try every time.
-      try {
-        await import(`../${event.detail}/index.js`)
-      } catch (error) {
-        // if that failed... retry
-        this.#moduleLoadRetries++
-        console.log(`reload tries: ${this.#moduleLoadRetries}`)
-        if (this.#moduleLoadRetries < 3) {
-          this.#startNewHandler(event)
-        } else {
-          this.#moduleLoadRetries = 0
-          return
-        }
-        return
-      }
+      await import(`../${event.detail}/index.js`)
 
       const windowToAdd = document.createElement(this.#windowElementType)
       if (this.#openTitles[event.detail]) {
