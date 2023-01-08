@@ -174,7 +174,7 @@ customElements.define('jk224jv-wm',
     async #startNewHandler (event) {
       // Load its module if not loaded. It will only be loaded once so... we try every time.
       try {
-        await import(`../${event.detail}`)
+        await import(`../${event.detail}/index.js`)
       } catch (error) {
         // if that failed... retry
         this.#moduleLoadRetries++
