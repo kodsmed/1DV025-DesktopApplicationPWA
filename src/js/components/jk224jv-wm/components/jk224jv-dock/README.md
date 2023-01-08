@@ -4,6 +4,12 @@ The jk224jv-dock component creates a taskbar with buttons to start new applicati
 
 It includes listeners for the startNew and restoreClicked events, and a update method to refresh the taskbar with new minimized windows information.
 
+## Attributes
+
+### **data-offline**
+
+If set to `anything but 'true'` it will show the classic five bars in the bottom right corner. If `'true'` the symbol will be clearly crossed out.
+
 ## Events
 
 `startNew`: Dispatched when the user clicks the button to start a new application. The event includes the dataid of the clicked button in its detail.

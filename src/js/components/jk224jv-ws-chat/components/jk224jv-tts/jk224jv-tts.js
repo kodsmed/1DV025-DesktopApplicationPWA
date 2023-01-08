@@ -22,9 +22,21 @@ customElements.define('jk224jv-tts',
  * Representing the element.
  */
   class extends HTMLElement {
+    /**
+     * Shortcut to checkbox element
+     */
     #enabled
+
+    /**
+     * Shortcut to the select element
+     */
     #selector
+
+    /**
+     * Stores the selected speechsynthesis voice.
+     */
     #myVoice
+
     /**
      * Initiate the element.
      */

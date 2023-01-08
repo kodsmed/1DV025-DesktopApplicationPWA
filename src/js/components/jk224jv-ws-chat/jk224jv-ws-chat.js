@@ -25,12 +25,36 @@ customElements.define('jk224jv-ws-chat',
  * Represents a jk224jv-ws-chat element.
  */
   class extends HTMLElement {
+    /**
+     * Shortcut to textarea element. The output.
+     */
     #display
+
+    /**
+     * Shortcut to the WebSocket connection.
+     */
     #socket
-    #messageListener
-    #username
-    #storageAccepted
+
+    /**
+     * Shortcut to the TextToSpeech module/component element.
+     */
     #tts
+
+    /**
+     * Variable Username.
+     *
+     * @example 'victor-charlie-charlie'
+     * @param {string}
+     */
+    #username
+
+    /**
+     * Variable if datastorage is aproved of not.
+     *
+     * @param {boolean}
+     */
+    #storageAccepted
+
     /**
      * Create and instance of the element.
      */

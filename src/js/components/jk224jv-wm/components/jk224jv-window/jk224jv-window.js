@@ -34,17 +34,23 @@ customElements.define('jk224jv-window',
  * Represents a jk224jv-window element.
  */
   class extends HTMLElement {
-    #header
-    #minimize
-    #maximize
-    #close
-    #window
+    /**
+     * Shortcuts to Elements.
+     */
+    #header //      header part.
+    #minimize //    minimize button
+    #maximize //    maximize buttom
+    #close //       close button
+    #window //      the main container div.
 
-    #mouseUpHandler
-    #mouseOutHandler
-    #dragHandler
-    #startX
-    #startY
+    /**
+     * Keep track of handlers used and variables used by the drag functionality.
+     */
+    #mouseUpHandler //    the listener for mouseup
+    #mouseOutHandler //   the listener for mouseout
+    #dragHandler //       the listener for mousemove
+    #startX //            where clientX was last loop
+    #startY //            where clientY was last loop
 
     /**
      * Create and instance of the element.
@@ -62,7 +68,7 @@ customElements.define('jk224jv-window',
       this.#maximize = this.shadowRoot.querySelector('#maximize')
       this.#close = this.shadowRoot.querySelector('#close')
 
-      // set listeners
+      // set listeners concerning the header
       this.#header.addEventListener('mousedown', this.#startDrag.bind(this))
       this.#maximize.addEventListener('click', (event) => this.#toggleMaximized())
       this.#minimize.addEventListener('click', (event) => this.#toggleMinimized())
@@ -71,6 +77,8 @@ customElements.define('jk224jv-window',
         event.stopPropagation()
         this.dispatchEvent(new CustomEvent('closeMe', { bubbles: true, composed: true }))
       })
+
+      // set other listeners
       this.addEventListener('click', (event) => this.#gotClicked(event))
       this.addEventListener('noResize', (event) => {
         event.stopPropagation(false)

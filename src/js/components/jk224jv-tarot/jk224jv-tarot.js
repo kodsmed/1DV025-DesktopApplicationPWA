@@ -38,9 +38,16 @@ customElements.define('jk224jv-tarot',
  * Represents a jk224jv-window element.
  */
   class extends HTMLElement {
-    #canvas
-    #ctx
-    #pInfo
+    /**
+     * Shortcut to elements
+     */
+    #canvas //  canvas element
+    #ctx //     2d context of canvas
+    #pInfo //   p element used to inform of compatability issues
+
+    /**
+     * Keeps track of randomly selected cards so they can be rendered.
+     */
     #pulledCards
 
     /**

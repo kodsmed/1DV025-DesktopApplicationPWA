@@ -20,12 +20,14 @@ customElements.define('jk224jv-memorygame',
  */
   class extends HTMLElement {
   /**
-   * Shortcut to the jk224jv-flipcard elements.
+   * An array of the jk224jv-flipcard elements.
+   *
+   * @param {customElements[]}
    */
     #cards
 
     /**
-     * Shortcut to the grid.
+     * Shortcut to the main containing div. "the grid"
      */
     #grid
 
@@ -39,10 +41,33 @@ customElements.define('jk224jv-memorygame',
      */
     #settings
 
+    /**
+     * Keeps track of the first and second selected flipcard elements.
+     *
+     * @param {customElements}
+     */
     #flippedOne
     #flippedTwo
+
+    /**
+     * Keep track of how many pares were found, used to calculate end of game.
+     *
+     * @param {number}
+     */
     #foundPairs
+
+    /**
+     * Keep track of how many turns (par of flipps) have been used so far.
+     *
+     * @param {number}
+     */
     #turnsUsed
+
+    /**
+     * Used in keyboard control that otherwise gets messup by the shuffle.
+     *
+     * @param {number}
+     */
     #focused
 
     /**

@@ -46,6 +46,8 @@ customElements.define('jk224jv-highscore',
 
     /**
      * Used to scramble / unscramble
+     *
+     * @param {string}
      */
     #key
 
@@ -57,6 +59,7 @@ customElements.define('jk224jv-highscore',
     #listNoPreview
     #hNoPreview
     #inputContainer
+
     /**
      * Create an instance of the element.
      */

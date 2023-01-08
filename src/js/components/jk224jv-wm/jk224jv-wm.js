@@ -25,18 +25,51 @@ customElements.define('jk224jv-wm',
  * Represents a jk224jv-wm element.
  */
   class extends HTMLElement {
-    #header
-    #surface
-    #dock
-    #dataConcent
+    /**
+     * Shortcut to Elements.
+     */
+    #header //  header infobar.
+    #surface // desktop area
+    #dock //    launcher dock area
 
+    /**
+     * Store variables.
+     */
+    #dataConcent //       {Boolean} - data storage concent?
+    #dockElementType //   {String} HTMLElement
+    #windowElementType // {String} HTMLElement
+
+    /**
+     * Array that stores information about open windows.
+     *
+     * @typedef openWindow
+     * @param {string} title -    name of the component
+     * @param {number} data-id -  given at component launch. Incremental. Unique.
+     * @param {string} xPos - initial css style offset Left.  '#px'
+     * @param {string} yPos - initial css style offset Top.   '#px'
+     * @param {string} zPos - initial css style z-index.      '#'
+     */
     #openWindows
-    #openTitles
-    #minimizedWindows
-    #windowElementType
-    #dockElementType
 
-    #moduleLoadRetries
+    /**
+     * Keeps track of how many time each element been opened.
+     * Dynamicly appended.
+     *
+     * @example { jk224jv-memory: 2, jk224kv-ws-chat: 1 }
+     *
+     * @typedef openTitle
+     * @param {number} [title]
+     */
+    #openTitles
+
+    /**
+     * Array that track of minimized Windows.
+     *
+     * @typedef minimizedWindow
+     * @param {string} title
+     * @param {number} dataId
+     */
+    #minimizedWindows
 
     /**
      * Create and instance of the element.
@@ -49,10 +82,9 @@ customElements.define('jk224jv-wm',
       // get elements in the shadowroot
       this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
-      this.#openWindows = [] // { title: {string}  data-id: {number}  xPos: {string}  yPos: {string}  zPos: {number}  reference: {HTMLElement}}
+      this.#openWindows = []
       this.#minimizedWindows = []
       this.#openTitles = {}
-      this.#moduleLoadRetries = 0
 
       // change if you want to use another window component.
       this.#windowElementType = 'jk224jv-window'
@@ -72,6 +104,7 @@ customElements.define('jk224jv-wm',
         // save the state here.
       })
 
+      // get datastorage concent or not
       if (!document.cookie.length > 0) {
         this.#dataConcent = confirm('Everyone loves to deal with these, but dataprotection laws mandates your approval for the WindowManager to store your data.\n\n Whithout this permission the application will still work, it will just be dumber.\n\n Stored data concists of windowstates, username and cache.  Is this acceptable? (ok to accept)')
       } else { // if there is any cookie, permission was given.
@@ -92,6 +125,7 @@ customElements.define('jk224jv-wm',
       const dc = this.shadowRoot.querySelector('#dockcontainer')
       const dockElement = document.createElement(this.#dockElementType)
       dockElement.setAttribute('id', 'dock')
+      dockElement.setAttribute('data-offline', 'false')
       dc.appendChild(dockElement)
       this.#dock = this.shadowRoot.querySelector('#dock')
     }
@@ -119,11 +153,11 @@ customElements.define('jk224jv-wm',
       if (!event.target.hasAttribute('minimized')) {
         event.target.setAttribute('minimized', true)
       }
-      const minimizedWindowData = {
+      const minimizedWindow = {
         title: this.#openWindows[index].title,
         dataId: this.#openWindows[index].dataId
       }
-      this.#minimizedWindows.push(minimizedWindowData)
+      this.#minimizedWindows.push(minimizedWindow)
       this.#dock.update(this.#minimizedWindows)
     }
 

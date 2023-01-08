@@ -14,6 +14,7 @@ template.innerHTML = `
     <div id='buttons'>
     </div>
     <div id='minis'></div>
+    <div id='antenna'></div>
   </div>
 `
 
@@ -22,9 +23,11 @@ customElements.define('jk224jv-dock',
  * Represents a jk224jv-window element.
  */
   class extends HTMLElement {
-    #dock
-    #buttons
-    #minis
+    /**
+     * Shortcuts to elements.
+     */
+    #buttons // div containing the launch buttons
+    #minis // div containing representations of minimized windows.
 
     /**
      * Create and instance of the element.
@@ -54,6 +57,28 @@ customElements.define('jk224jv-dock',
           this.dispatchEvent(new CustomEvent('restoreClicked', { bubbles: true, composed: true, detail: event.target.dataId }))
         }
       })
+    }
+
+    /**
+     * Listen to these attrbutes set in html.
+     *
+     * @returns {string[]} A string array of attributes to monitor.
+     */
+    static get observedAttributes () {
+      return ['data-offline']
+    }
+
+    /**
+     * Called when observed attribute(s) changes.
+     *
+     * @param {string} name - the attributes name
+     * @param {*} oldValue - the previous value
+     * @param {*} newValue - the new value
+     */
+    attributeChangedCallback (name, oldValue, newValue) {
+      if (name === 'data-offline') {
+        this.#showOffline(this.getAttribute('data-offline'))
+      }
     }
 
     /**
@@ -92,5 +117,28 @@ customElements.define('jk224jv-dock',
         newButton.dataId = file
         this.#buttons.appendChild(newButton)
       })
+    }
+
+    /**
+     * Shows a connection or lack of connecting icon if given true or false.
+     *
+     * @param {string} data - getAttribute('data-offline')
+     */
+    #showOffline (data) {
+      const div = this.shadowRoot.querySelector('#antenna')
+      while (div.firstChild) {
+        div.removeChild(div.firstChild())
+      }
+      let IMG_URL
+      const isTrueSet = (data.toLowerCase() === 'true')
+      if (isTrueSet) { // offline is set
+        IMG_URL = (new URL('./img/offline.ico', import.meta.url))
+      } else {
+        IMG_URL = (new URL('./img/online.ico', import.meta.url))
+      }
+      const newImage = document.createElement('img')
+      newImage.setAttribute('src', IMG_URL)
+      newImage.setAttribute('height', '25px')
+      div.appendChild(newImage)
     }
   })

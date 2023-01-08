@@ -10,8 +10,12 @@
   width: 100%;
   background-color: rgb(110, 110, 110);
   display: grid;
-  grid-template-columns: max-content auto;
+  grid-template-columns: max-content auto max-content;
 
+}
+
+#antenna {
+  padding: 10px;
 }
 
 #buttons {
