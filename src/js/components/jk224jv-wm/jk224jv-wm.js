@@ -365,6 +365,13 @@ customElements.define('jk224jv-wm',
       navigator.serviceWorker.controller.postMessage('OnlineDetected')
       console.log('heartbeat')
       this.#online = true
+      if (this.#dock.hasAttribute('data-offline')) {
+        this.#dock.removeAttribute('data-offline')
+      }
+      // if (this.#header.hasAttribute('data-offline')) {
+      //   this.#header.removeAttribute('data-offline')
+      // }
+
       window.clearTimeout(this.#connectionCheckTimeout)
       this.#connectionCheckTimeout = window.setTimeout(this.#checkConnectionTimedOut.bind(this), 50000)
     }
@@ -380,6 +387,11 @@ customElements.define('jk224jv-wm',
       navigator.serviceWorker.controller.postMessage('OfflineDetected')
 
       window.clearTimeout(this.#connectionCheckTimeout)
+
+      this.#dock.setAttribute('data-offline', 'true')
+      // this.#header.setAttribute('data-offline', 'true')
+
+      // try to reconnect in 20s
       this.#connectionCheckTimeout = window.setTimeout(this.#checkConnection.bind(this), 20000, 'wss://courselab.lnu.se/message-app/socket')
     }
   })
