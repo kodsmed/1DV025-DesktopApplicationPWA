@@ -159,11 +159,11 @@ customElements.define('jk224jv-ws-chat',
       if (this.#clean(msg.type) === 'message' || this.#clean(msg.type) === 'notification') {
         this.#display.textContent += `\n${msg.username}: ${msg.data}` // goes into 'safesink'.
         this.#display.scrollTop = this.#display.scrollHeight
-      }
 
-      if (parseInt(this.getAttribute('zindex')) === 999) {
-        // the text content can deal with script... speechesynther not so much.
-        this.#tts.say(this.#cleanForTTS(msg.data))
+        if (parseInt(this.getAttribute('zindex')) === 999) {
+          // the text content can deal with script... speechesynther not so much.
+          this.#tts.say(this.#cleanForTTS(msg.data))
+        }
       }
     }
 
