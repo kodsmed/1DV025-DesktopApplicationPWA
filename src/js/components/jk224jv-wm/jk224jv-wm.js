@@ -365,9 +365,7 @@ customElements.define('jk224jv-wm',
       navigator.serviceWorker.controller.postMessage('OnlineDetected')
       console.log('heartbeat')
       this.#online = true
-      if (this.#dock.hasAttribute('data-offline')) {
-        this.#dock.removeAttribute('data-offline')
-      }
+      this.#dock.setAttribute('data-offline', 'false')
       // if (this.#header.hasAttribute('data-offline')) {
       //   this.#header.removeAttribute('data-offline')
       // }

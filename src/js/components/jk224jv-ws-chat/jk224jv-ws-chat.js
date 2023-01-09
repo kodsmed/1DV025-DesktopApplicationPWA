@@ -56,6 +56,17 @@ customElements.define('jk224jv-ws-chat',
     #storageAccepted
 
     /**
+     * Buffers messages untill connection is re-established.
+     */
+    #sendBuffer
+
+    /**
+     * Should it loose connection, this keeps track of the how long to wait for next retry
+     */
+    #reconnectTimeout // {number}
+    #timeoutId
+
+    /**
      * Create and instance of the element.
      */
     constructor () {
@@ -71,9 +82,19 @@ customElements.define('jk224jv-ws-chat',
       this.#socket.addEventListener('open', (event) => {
         this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
       })
+      this.#socket.addEventListener('error', (error) => {
+        console.error('WS error:', error.message, 'Closing.')
+        this.#socket.close()
+      })
+      this.#socket.addEventListener('close', () => {
+        this.#display.textContent += '\nws-chat: connection was lost...'
+        this.#reconnect()
+      })
+      this.#sendBuffer = []
+      this.#reconnectTimeout = 250
+      this.addEventListener('inputReceived', (event) => this.#inputHandler(event))
 
-      this.addEventListener('inputReceived', (event) => this.#sendMessage(event))
-
+      // is username set? If so, retrieve. else, aquire.
       const username = this.#getCookie('username')
       if (username) {
         this.#username = username
@@ -118,35 +139,58 @@ customElements.define('jk224jv-ws-chat',
     }
 
     /**
-     * Sends a new message to the ws server.
+     * Redirects the event to the propper function.
+     *
+     * @param {event} event - event from input component.
+     */
+    #inputHandler (event) {
+      if (!this.#username) {
+        this.#setUsername(event)
+      } else {
+        const data =
+          {
+            type: 'message',
+            data: event.detail,
+            username: this.#username,
+            channel: '1',
+            key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
+          }
+        this.#sendMessage(data)
+      }
+    }
+
+    /**
+     * Sends a new message to the ws server. If unable, store to sendBuffer.
      *
      * @todo Make username set-able.
      *
-     * @param {event} event - inputReceived from input-dialogue component.
+     * @param {object} data - inputReceived from input-dialogue component.
      */
-    async #sendMessage (event) {
-      if (this.#username) {
-        const data =
-        {
-          type: 'message',
-          data: event.detail,
-          username: this.#username, // todo: make set-able.
-          channel: '1',
-          key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
-        }
+    async #sendMessage (data) {
+      if (this.#socket.readyState === WebSocket.OPEN) {
         this.#socket.send(await JSON.stringify(data))
       } else {
-        this.#username = event.detail
-        if (this.#storageAccepted) {
-          const date = new Date()
-          date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000))
-          document.cookie = `username = ${event.detail}; expires=${date.toGMTString()}`
-          this.#display.textContent += '\nws-chat: username saved; clear cookies to reset.'
-        } else {
-          this.#display.textContent += '\nws-chat: you have opted out of datastorage; your username will reset after this session.'
-        }
-        this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', event.detail)
+        this.#sendBuffer.push(data)
+        this.#display.textContent += `\nBuffered: ${data.data}... sending on reconnect.`
       }
+    }
+
+    /**
+     * Sets the username. If allowed, store it in a cookie, or else tell the user.
+     *
+     * @param {event} event - inputReceived from input-dialogue component.
+     */
+    #setUsername (event) {
+      this.#username = event.detail
+      if (this.#storageAccepted) {
+        const date = new Date()
+        date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000))
+        document.cookie = `username = ${event.detail}; expires=${date.toGMTString()}`
+        this.#display.textContent += '\nws-chat: username saved; clear cookies to reset.'
+      } else {
+        this.#display.textContent += '\nws-chat: you have opted out of datastorage; your username will reset after this session.'
+      }
+      this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', event.detail)
     }
 
     /**
@@ -165,6 +209,40 @@ customElements.define('jk224jv-ws-chat',
           this.#tts.say(this.#cleanForTTS(msg.data))
         }
       }
+    }
+
+    /**
+     * Tries to reconnect to the server.
+     */
+    #reconnect () {
+      this.#display.textContent += '\nws-chat: trying to reconnect...'
+      this.#socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
+
+      // and new listeners
+      this.#socket.addEventListener('open', () => {
+        window.clearTimeout(this.#timeoutId)
+        this.#display.textContent += '\nws-chat: Reconnected. Sending any buffered messages.'
+        while (this.#sendBuffer.length > 0) {
+          this.#sendMessage(this.#sendBuffer.shift())
+        }
+        this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
+        this.#socket.addEventListener('error', (error) => {
+          console.error('WS error:', error.message, 'Closing.')
+          this.#socket.close()
+        })
+        this.#socket.addEventListener('close', () => {
+          this.#display.textContent += '\nws-chat: connection was lost...'
+          window.setTimeout(
+            this.#reconnect.bind(this),
+            Math.min(10000, this.#reconnectTimeout += this.#reconnectTimeout)
+          )
+        })
+      })
+      // try again
+      this.#timeoutId = window.setTimeout(
+        this.#reconnect.bind(this),
+        Math.min(10000, this.#reconnectTimeout += this.#reconnectTimeout)
+      )
     }
 
     /**

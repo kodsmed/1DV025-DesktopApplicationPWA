@@ -127,7 +127,7 @@ customElements.define('jk224jv-dock',
     #showOffline (data) {
       const div = this.shadowRoot.querySelector('#antenna')
       while (div.firstChild) {
-        div.removeChild(div.firstChild())
+        div.removeChild(div.firstChild)
       }
       let IMG_URL
       const isTrueSet = (data.toLowerCase() === 'true')
