@@ -187,8 +187,8 @@ customElements.define('jk224jv-window',
     #stopDrag () {
       document.removeEventListener('mousemove', this.#dragHandler)
       document.removeEventListener('mouseup', this.#mouseUpHandler)
-      this.setAttribute('xpos', `${this.#window.style.left}px`)
-      this.setAttribute('ypos', `${this.#window.style.top}px`)
+      this.setAttribute('xpos', `${this.#window.style.left}`)
+      this.setAttribute('ypos', `${this.#window.style.top}`)
     }
 
     /**

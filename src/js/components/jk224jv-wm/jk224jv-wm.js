@@ -102,7 +102,6 @@ customElements.define('jk224jv-wm',
         console.log('beforeunload fires')
         this.#storeCurrentState()
         return 'Life Universe and Everything.'
-        // save the state here.
       })
 
       // get datastorage concent or not
@@ -117,6 +116,9 @@ customElements.define('jk224jv-wm',
         date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000))
         document.cookie = `storageAccepted = true; expires=${date.toGMTString()}`
       }
+
+      // look for data windows that were open last session
+      this.#restoreState()
     }
 
     /**
@@ -146,7 +148,8 @@ customElements.define('jk224jv-wm',
     #minimizeHandler (event) {
       let index
       for (let entry = 0; entry < this.#openWindows.length; entry++) {
-        if (this.#openWindows[entry].dataId === event.target.getAttribute('data-id')) {
+        console.log(this.#openWindows[entry]['data-id'])
+        if (`${this.#openWindows[entry]['data-id']}` === event.target.getAttribute('data-id')) {
           index = entry
         }
       }
@@ -156,7 +159,7 @@ customElements.define('jk224jv-wm',
       }
       const minimizedWindow = {
         title: this.#openWindows[index].title,
-        dataId: this.#openWindows[index].dataId
+        dataId: this.#openWindows[index]['data-id']
       }
       this.#minimizedWindows.push(minimizedWindow)
       this.#dock.update(this.#minimizedWindows)
@@ -173,7 +176,7 @@ customElements.define('jk224jv-wm',
 
       let index
       for (let entry = 0; entry < this.#minimizedWindows.length; entry++) {
-        if (this.#minimizedWindows[entry].dataId === event.detail) {
+        if (this.#minimizedWindows[entry]['data-id'] === event.detail) {
           index = entry
         }
       }
@@ -189,7 +192,7 @@ customElements.define('jk224jv-wm',
     #closeWindow (event) {
       let index
       for (let entry = 0; entry < this.#openWindows.length; entry++) {
-        if (this.#openWindows[entry].dataId === event.target.getAttribute('data-id')) {
+        if (this.#openWindows[entry]['data-id'] === event.target.getAttribute('data-id')) {
           index = entry
         }
       }
@@ -205,42 +208,39 @@ customElements.define('jk224jv-wm',
      * Starts a new sub-application window.
      *
      * @param {event} event - startNew event from dock component.
+     * @param {openWindow} openWindow - windowObject stating starting conditions.
      */
-    async #startNewHandler (event) {
+    async #startNewHandler (event, openWindow = {
+      title: event.detail,
+      height: 'fit-content',
+      width: 'fit-content',
+      xpos: `${20 * (this.#openWindows.length + 1)}px`,
+      ypos: `${30 * ((this.#openWindows.length) % 10 + 1)}px`,
+      zindex: this.#openWindows.length,
+      'data-zdefault': this.#openWindows.length,
+      'data-id': this.#openWindows.length
+    }) {
       await import(`../${event.detail}/index.js`)
 
-      const windowToAdd = document.createElement(this.#windowElementType)
       if (this.#openTitles[event.detail]) {
         this.#openTitles[event.detail]++
+        openWindow.title += ` (${this.#openTitles[event.detail]})`
       } else {
         this.#openTitles[event.detail] = 1
       }
 
-      let title = event.detail
-      if (this.#openTitles[event.detail] > 1) {
-        title += ` (${this.#openTitles[event.detail]})`
+      if (this.#dataConcent) {
+        openWindow['data-storage'] = 'true'
       }
-      windowToAdd.setAttribute('title', title)
-      windowToAdd.setAttribute('height', 'fit-content')
-      windowToAdd.setAttribute('width', 'fit-content')
-      windowToAdd.setAttribute('xpos', `${20 * (this.#openWindows.length + 1)}px`)
-      windowToAdd.setAttribute('ypos', `${30 * ((this.#openWindows.length) % 10 + 1)}px`)
-      windowToAdd.setAttribute('zindex', this.#openWindows.length)
-      windowToAdd.setAttribute('data-zdefault', this.#openWindows.length)
-      windowToAdd.setAttribute('data-id', this.#openWindows.length)
-      windowToAdd.setAttribute('data-storage', '')
+
+      const windowToAdd = document.createElement(this.#windowElementType)
+      for (const [key, value] of Object.entries(openWindow)) {
+        windowToAdd.setAttribute(`${key}`, `${value}`)
+      }
       const contentToAdd = document.createElement(`${event.detail}`)
       contentToAdd.setAttribute('slot', 'window-content')
 
-      const windowData = {
-        title: windowToAdd.getAttribute('title'),
-        dataId: windowToAdd.getAttribute('data-id'),
-        xPos: windowToAdd.getAttribute('xPos'),
-        yPos: windowToAdd.getAttribute('yPos'),
-        zPos: windowToAdd.getAttribute('zindex')
-      }
-
-      this.#openWindows.push(windowData)
+      this.#openWindows.push(openWindow)
 
       windowToAdd.appendChild(contentToAdd)
       this.#surface.appendChild(windowToAdd)
@@ -280,11 +280,40 @@ customElements.define('jk224jv-wm',
           const openWindow = {}
           for (const attr of element.attributes) {
             openWindow[`${attr.name}`] = `${attr.value}`
+            console.log(openWindow[`${attr.name}`] = `${attr.value}`)
           }
+          openWindow.title = openWindow.title.split(' ')[0]
           this.#openWindows.push(openWindow)
         })
         const jsonString = await JSON.stringify(this.#openWindows)
         window.localStorage.setItem('jk224jv-wm', jsonString)
+      }
+    }
+
+    /**
+     * Looks at data saved in localstorage and reonpen windows matching that state.
+     */
+    async #restoreState () {
+      console.log('Wm: restoreState fires')
+      const jsonString = window.localStorage.getItem('jk224jv-wm') ?? false
+      if (!jsonString) {
+        // we didnt get anything from localstorage, so there is no sessiondata to restore... exit left.
+        console.log('Wm: restoreState, no session data.')
+        return false
+      }
+
+      const sessionData = await JSON.parse(jsonString)
+      if (sessionData.length === 0) {
+        // no windows were open.
+        return true
+      }
+      console.log(sessionData)
+      for (let entry = 0; entry < sessionData.length; entry++) {
+        const fakeEvent = {}
+
+        fakeEvent.detail = `${sessionData[entry].title}`
+        this.#startNewHandler(fakeEvent, sessionData[entry])
+        console.log(`startNew sent: ${fakeEvent}, ${sessionData[entry]}`)
       }
     }
   })
