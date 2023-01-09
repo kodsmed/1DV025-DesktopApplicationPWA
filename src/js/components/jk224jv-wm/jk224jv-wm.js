@@ -7,6 +7,7 @@
  */
 import './components/jk224jv-window'
 import './components/jk224jv-dock'
+
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
 const template = document.createElement('template')
 template.innerHTML = `
@@ -35,9 +36,16 @@ customElements.define('jk224jv-wm',
     /**
      * Store variables.
      */
-    #dataConcent //       {Boolean} - data storage concent?
-    #dockElementType //   {String} HTMLElement
-    #windowElementType // {String} HTMLElement
+    #dataConcent //               {Boolean} - data storage concent?
+    #dockElementType //           {String} HTMLElement
+    #windowElementType //         {String} HTMLElement
+
+    /**
+     * Used to verify online-ness.
+     */
+    #connectionCheckTimeout //    A timeout id
+    #ws //                        Shortcut to websocket connection.
+    #online
 
     /**
      * Array that stores information about open windows.
@@ -45,9 +53,9 @@ customElements.define('jk224jv-wm',
      * @typedef openWindow
      * @param {string} title -    name of the component
      * @param {number} data-id -  given at component launch. Incremental. Unique.
-     * @param {string} xPos - initial css style offset Left.  '#px'
-     * @param {string} yPos - initial css style offset Top.   '#px'
-     * @param {string} zPos - initial css style z-index.      '#'
+     * @param {string} xPos -     initial css style offset Left.  '#px'
+     * @param {string} yPos -     initial css style offset Top.   '#px'
+     * @param {string} zPos -     initial css style z-index.      '#'
      */
     #openWindows
 
@@ -103,6 +111,9 @@ customElements.define('jk224jv-wm',
         this.#storeCurrentState()
         return 'Life Universe and Everything.'
       })
+      window.addEventListener('OfflineDetected', () => {
+        console.log('Wm: connection observer flagged!')
+      })
 
       // get datastorage concent or not
       if (!document.cookie.length > 0) {
@@ -119,6 +130,12 @@ customElements.define('jk224jv-wm',
 
       // look for data windows that were open last session
       this.#restoreState()
+
+      // Start checking connection.
+      this.#checkConnection('wss://courselab.lnu.se/message-app/socket')
+      // including listeners... tie the small support browsers have for online detection into my own system.
+      window.addEventListener('offline', () => this.#checkConnectionTimedOut())
+      window.addEventListener('online', () => this.#checkConnectionSuccess())
     }
 
     /**
@@ -137,7 +154,7 @@ customElements.define('jk224jv-wm',
      * Run once as the component is removed from the DOM.
      */
     disconnectedCallback () {
-      //
+      window.clearTimeout(this.#connectionCheckTimeout)
     }
 
     /**
@@ -315,5 +332,54 @@ customElements.define('jk224jv-wm',
         this.#startNewHandler(fakeEvent, sessionData[entry])
         console.log(`startNew sent: ${fakeEvent}, ${sessionData[entry]}`)
       }
+    }
+
+    /**
+     * Checks connection against a Websocket server.
+     *
+     * @param {URL} wsServerURL - URL to webserver.
+     */
+    #checkConnection (wsServerURL) {
+      // set a countdown from 50seconds. We expect to retrieve any message in that time.
+      this.#connectionCheckTimeout = window.setTimeout(this.#checkConnectionTimedOut.bind(this), 50000)
+
+      this.#ws = new WebSocket(wsServerURL)
+
+      this.#ws.addEventListener('open', () => {
+        // when the event message fires, we don't care what it is... we just reset the countdown.
+        // in otherwords we remove it and set it again.
+        this.#ws.addEventListener('message', () => this.#checkConnectionSuccess())
+
+        // on an error just try again. The countdown is still running, so we don't really care.
+        this.#ws.addEventListener('error', () => {
+          window.setTimeout(this.#checkConnection, 10000, 'wss://courselab.lnu.se/message-app/socket')
+        })
+      })
+    }
+
+    /**
+     * Handles the event that the checkConnection succeded.
+     * Or the navigator 'online' envent fired.
+     */
+    #checkConnectionSuccess () {
+      navigator.serviceWorker.controller.postMessage('OnlineDetected')
+      console.log('heartbeat')
+      this.#online = true
+      window.clearTimeout(this.#connectionCheckTimeout)
+      this.#connectionCheckTimeout = window.setTimeout(this.#checkConnectionTimedOut.bind(this), 50000)
+    }
+
+    /**
+     * Handles the event that the checkConnection function reached timeout.
+     * Or the navigator 'offline' event fired.
+     */
+    #checkConnectionTimedOut () {
+      console.log('Wm : Check connection FAILED!')
+      this.#online = false
+      // try to tell the serviceworker.
+      navigator.serviceWorker.controller.postMessage('OfflineDetected')
+
+      window.clearTimeout(this.#connectionCheckTimeout)
+      this.#connectionCheckTimeout = window.setTimeout(this.#checkConnection.bind(this), 20000, 'wss://courselab.lnu.se/message-app/socket')
     }
   })

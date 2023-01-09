@@ -1,5 +1,5 @@
-const version = '1.0.3'
-self.offlineMode = false
+const version = '1.1.0'
+let offlineMode = false
 
 self.addEventListener('install', event => {
   console.log('ServiceWorker: Has installed version', version)
@@ -13,20 +13,54 @@ self.addEventListener('activate', event => {
 })
 
 self.addEventListener('fetch', event => {
-  console.log('ServiceWorker: Is fetching somthing')
-  event.respondWith(cachedFetch(event.request))
+  console.log('ServiceWorker: Is fetching somtheing')
+  event.respondWith(fetcher(event.request))
+
   // cache new resources when online and serve cached content if offline.
 })
 
 self.addEventListener('message', event => {
   console.log('ServiceWorker: Got a message:', event.data)
-  // Handle events from the main application
+  messageHandler(event)
 })
 
 self.addEventListener('push', event => {
   console.log('ServiceWorker: Got a push message from the server')
   // Show a notification for the user
 })
+
+/**
+ * Handles specialcases of Messages.
+ *
+ * @param {event} event - message event.
+ */
+function messageHandler (event) {
+  if (event.data === 'OnlineDetected') {
+    offlineMode = false
+  }
+  if (event.data === 'OfflineDetected') {
+    offlineMode = true
+  }
+}
+
+/**
+ * Splits request depending on if offlineMode is established or not.
+ *
+ *
+ * @param {event.request} request - what does the browser try to fetch?
+ * @returns {Promise} Promise that resolves to undefined.
+ */
+async function fetcher (request) {
+  if (!offlineMode) {
+    console.log('ServiceWorker: using fetch.')
+    const response = await cachedFetch(request)
+    return response
+  } else {
+    console.log('ServiceWorker: using cache.')
+    await caches.open(version)
+    return caches.match(request)
+  }
+}
 
 /**
  * Caches resources required for the app to at all function.
