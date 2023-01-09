@@ -1,4 +1,4 @@
-const version = '1.1.0'
+const version = '1.1.1'
 let offlineMode = false
 
 self.addEventListener('install', event => {
@@ -82,6 +82,8 @@ async function cacheResources () {
     'js/components/jk224jv-wm/components/jk224jv-dock/index.js',
     'js/components/jk224jv-wm/components/jk224jv-dock/jk224jv-dock.js',
     'js/components/jk224jv-wm/components/jk224jv-dock/css/style.css',
+    '/js/components/jk224jv-wm/components/jk224jv-dock/img/online.ico',
+    '/js/components/jk224jv-wm/components/jk224jv-dock/img/offline.ico',
     'js/components/jk224jv-wm/components/jk224jv-window/index.js',
     'js/components/jk224jv-wm/components/jk224jv-window/jk224jv-window.js',
     'js/components/jk224jv-wm/components/jk224jv-window/css/style.css'

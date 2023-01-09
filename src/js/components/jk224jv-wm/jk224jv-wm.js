@@ -362,7 +362,11 @@ customElements.define('jk224jv-wm',
      * Or the navigator 'online' envent fired.
      */
     #checkConnectionSuccess () {
-      navigator.serviceWorker.controller.postMessage('OnlineDetected')
+      try { // try to tell the serviceworker.
+        navigator.serviceWorker.controller.postMessage('OnlineDetected')
+      } catch (error) {
+        // thorows error if serviceworker have not loded yet. This can be ignored.
+      }
       console.log('heartbeat')
       this.#online = true
       this.#dock.setAttribute('data-offline', 'false')
@@ -381,9 +385,11 @@ customElements.define('jk224jv-wm',
     #checkConnectionTimedOut () {
       console.log('Wm : Check connection FAILED!')
       this.#online = false
-      // try to tell the serviceworker.
-      navigator.serviceWorker.controller.postMessage('OfflineDetected')
-
+      try { // try to tell the serviceworker.
+        navigator.serviceWorker.controller.postMessage('OfflineDetected')
+      } catch (error) {
+        // thorows error if serviceworker have not loded yet. This can be ignored.
+      }
       window.clearTimeout(this.#connectionCheckTimeout)
 
       this.#dock.setAttribute('data-offline', 'true')
