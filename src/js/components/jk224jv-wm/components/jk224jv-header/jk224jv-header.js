@@ -120,6 +120,10 @@ customElements.define('jk224jv-header',
         if (!red.contains('hidden')) {
           red.add('hidden')
         }
+        // make sure green is hidden
+        if (!green.contains('hidden')) {
+          green.add('hidden')
+        }
         // blink lime for 1s then go green.
         if (lime.contains('hidden')) {
           lime.remove('hidden')
