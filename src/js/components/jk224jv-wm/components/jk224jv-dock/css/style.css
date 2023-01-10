@@ -12,7 +12,6 @@
   display: grid;
   grid-template-columns: max-content auto max-content;
   border-top: 1px solid black;
-
 }
 
 #antenna {

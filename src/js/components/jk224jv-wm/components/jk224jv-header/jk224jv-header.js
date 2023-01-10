@@ -65,7 +65,8 @@ customElements.define('jk224jv-header',
       this.#green = this.shadowRoot.querySelector('.green')
       this.#lime = this.shadowRoot.querySelector('.lime')
 
-      this.#timeoutId = window.setTimeout(this.#updateClocks.bind(this), 1000)
+      // start the clocks
+      this.#updateClocks()
     }
 
     /**
@@ -86,8 +87,10 @@ customElements.define('jk224jv-header',
      */
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'data-offline') {
-        const isTrueSet = (newValue === 'true')
-        this.#updateConnectionDisplay(isTrueSet)
+        console.log('attibute', newValue)
+        // false = We are not offline
+        const isOnline = (newValue === 'false')
+        this.#updateConnectionDisplay(isOnline)
       }
     }
 
@@ -103,10 +106,47 @@ customElements.define('jk224jv-header',
 
     /**
      * Update the displayed connectionstatus.
+     * Could get several updates in relativly fast progression so toggle cant be used.
      *
      * @param {boolean} status - should contain 'true' or 'false'.
      */
-    #updateConnectionDisplay (status) {}
+    #updateConnectionDisplay (status) {
+      // I didnt want to write this and classlist every line.
+      const red = this.#red.classList
+      const green = this.#green.classList
+      const lime = this.#lime.classList
+      if (status) {
+        // make sure red is hidden.
+        if (!red.contains('hidden')) {
+          red.add('hidden')
+        }
+        // blink lime for 1s then go green.
+        if (lime.contains('hidden')) {
+          lime.remove('hidden')
+          window.setTimeout(() => {
+            if (!lime.contains('hidden')) {
+              lime.add('hidden')
+            }
+            if (green.contains('hidden')) {
+              green.remove('hidden')
+            }
+          }, 1000)
+        }
+      } else {
+        // make sure red is vissible
+        if (red.contains('hidden')) {
+          red.remove('hidden')
+        }
+        // make sure green is hidden
+        if (!green.contains('hidden')) {
+          green.add('hidden')
+        }
+        // make sure lime is hidden
+        if (!lime.contains('hidden')) {
+          lime.add('hidden')
+        }
+      }
+    }
 
     /**
      * Create a string containing the localtime in a 24h HH:MM format.
