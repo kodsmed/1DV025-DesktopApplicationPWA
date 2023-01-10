@@ -7,6 +7,7 @@
  */
 import './components/jk224jv-input-dialogue/'
 import './components/jk224jv-tts/'
+import './components/jk224jv-stt/'
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
 const template = document.createElement('template')
 template.innerHTML = `
@@ -15,6 +16,7 @@ template.innerHTML = `
     <div id='messages'>
       <textarea readonly="true"></textarea>
       <jk224jv-tts></jk224jv-tts>
+      <jk224jv-stt></jk224jv-stt>
     </div>
     <jk224jv-input-dialogue minlength="0" maxlength="128" message="" ></jk224jv-input.dialogue>
   </div>
@@ -93,6 +95,7 @@ customElements.define('jk224jv-ws-chat',
       this.#sendBuffer = []
       this.#reconnectTimeout = 250
       this.addEventListener('inputReceived', (event) => this.#inputHandler(event))
+      this.addEventListener('sttRecieved', (event) => { console.log(`got : ${event.detail}`) })
 
       // is username set? If so, retrieve. else, aquire.
       const username = this.#getCookie('username')
@@ -127,7 +130,6 @@ customElements.define('jk224jv-ws-chat',
         this.style.zIndex = parseInt(newValue)
       }
       this.#storageAccepted = this.hasAttribute('data-storage')
-      console.log(`storage enabled: ${this.#storageAccepted}`)
     }
 
     /**

@@ -5,7 +5,10 @@ select {
   width: 80%;
 }
 
+p {
+  display: block;
+}
+
 #container {
-  padding-bottom: 3px;
-  border-bottom: 1px solid black;
+  margin: 2px;
 }

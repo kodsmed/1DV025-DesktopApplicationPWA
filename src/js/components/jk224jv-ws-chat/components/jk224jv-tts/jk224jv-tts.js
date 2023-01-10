@@ -12,7 +12,7 @@ template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='container'>
     <input type="checkbox" value="enabled" name="enabled" id="enabled">
-    <label for="enable">Enable Text->Speech</label>
+    <label for="enable">Enable Text > Speech</label>
     <select name="voices" id="voices"></select>
   </div>
   `
