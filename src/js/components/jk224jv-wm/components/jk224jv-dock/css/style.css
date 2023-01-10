@@ -11,6 +11,7 @@
   background-color: rgb(110, 110, 110);
   display: grid;
   grid-template-columns: max-content auto max-content;
+  border-top: 1px solid black;
 
 }
 

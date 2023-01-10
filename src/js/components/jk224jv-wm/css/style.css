@@ -2,12 +2,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 #desktop {
   height: 100%;
   display: grid;
-  grid-template-rows: 25px auto 50px;
+  grid-template-rows: min-content auto 51px;
   grid-template-areas:  "header"
                         "surface"
                         "dock";

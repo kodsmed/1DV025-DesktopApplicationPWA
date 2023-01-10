@@ -1,0 +1,53 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+#container {
+  height: 25px;
+  background-color:  rgb(110, 110, 110);
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#connection {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#connection div {
+  border-radius: 20px;
+  padding: 0px;
+  width: 20px;
+  height: 20px;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+}
+
+#clocks p {
+  font-weight: bold;
+}
+
+#connection p {
+  font-weight: bold;
+}
+
+.green {
+  background-color: rgb(1, 148, 1);
+}
+
+.lime {
+  background-color: chartreuse;
+}
+
+.red {
+  background-color: darkred;
+}
+
+.hidden {
+  display: none;
+}

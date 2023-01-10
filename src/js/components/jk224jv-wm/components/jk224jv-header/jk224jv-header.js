@@ -12,7 +12,7 @@ template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='container'>
     <div id='clocks'><p id='localtime'></p><p id='sessiontime'></div>
-    <div id='title'><h2>title</h2></div>
+    <div id='title'><h2>Personal Web Desktop</h2></div>
     <div id='connection'>
       <p>Connection: </p>
       <div class='green hidden'></div>
@@ -72,6 +72,7 @@ customElements.define('jk224jv-header',
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
+      
     }
 
     /**

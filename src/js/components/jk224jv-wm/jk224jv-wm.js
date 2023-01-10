@@ -95,13 +95,14 @@ customElements.define('jk224jv-wm',
       this.#minimizedWindows = []
       this.#openTitles = {}
 
-      // change if you want to use another window component.
-      this.#windowElementType = 'jk224jv-window'
-      // change if you want to use anther dock component.
+      /**
+       * Tell the window manager to use these dock, header and window component.
+       * The component must be placed in the wms component folder.
+       */
       this.#dockElementType = 'jk224jv-dock'
-      // change if you want to use another header component
       this.#headerElementType = 'jk224jv-header'
-      // Don´t forget imports.
+      this.#windowElementType = 'jk224jv-window'
+      this.#attachComponents()
 
       // set listeners
       this.#surface.addEventListener('minimizeMe', this.#minimizeHandler.bind(this))
@@ -145,23 +146,6 @@ customElements.define('jk224jv-wm',
      * Run once as the component is inserted into the DOM.
      */
     async connectedCallback () {
-      // import and attach selected dock
-      await import(`./components/${this.#dockElementType}`)
-      const dc = this.shadowRoot.querySelector('#dockcontainer')
-      const dockElement = document.createElement(this.#dockElementType)
-      dockElement.setAttribute('id', 'dock')
-      dockElement.setAttribute('data-offline', 'false')
-      dc.appendChild(dockElement)
-      this.#dock = this.shadowRoot.querySelector('#dock')
-
-      // import and attach selected header
-      await import(`./components/${this.#headerElementType}`)
-      const hc = this.shadowRoot.querySelector('#headercontainer')
-      const headerElement = document.createElement(this.#headerElementType)
-      headerElement.setAttribute('id', 'header')
-      headerElement.setAttribute('data-offline', 'false')
-      hc.appendChild(headerElement)
-      this.#header = this.shadowRoot.querySelector('#header')
     }
 
     /**
@@ -251,7 +235,7 @@ customElements.define('jk224jv-wm',
       'data-zdefault': this.#openWindows.length,
       'data-id': this.#openWindows.length
     }) {
-      await import(`../${event.detail}/index.js`)
+      await import(`../${event.detail}/index.js` /* @vite-ignore */)
 
       if (this.#openTitles[event.detail]) {
         this.#openTitles[event.detail]++
@@ -411,5 +395,32 @@ customElements.define('jk224jv-wm',
 
       // try to reconnect in 20s
       this.#connectionCheckTimeout = window.setTimeout(this.#checkConnection.bind(this), 20000, 'wss://courselab.lnu.se/message-app/socket')
+    }
+
+    /**
+     * Imports and attaches selected wm-subcomponents.
+     * Vite hates this with a passion!
+     * That is why the unnessesary constants is declared or vite wont see the private fields.
+     */
+    async #attachComponents () {
+      // import and attach selected dock
+      const dock = `./components/${this.#dockElementType}`
+      await import(dock /* @vite-ignore */)
+      const dc = this.shadowRoot.querySelector('#dockcontainer')
+      const dockElement = document.createElement(this.#dockElementType)
+      dockElement.setAttribute('id', 'dock')
+      dockElement.setAttribute('data-offline', 'false')
+      dc.appendChild(dockElement)
+      this.#dock = this.shadowRoot.querySelector('#dock')
+
+      // import and attach selected header
+      const header = `./components/${this.#headerElementType}`
+      await import(header /* @vite-ignore */)
+      const hc = this.shadowRoot.querySelector('#headercontainer')
+      const headerElement = document.createElement(this.#headerElementType)
+      headerElement.setAttribute('id', 'header')
+      headerElement.setAttribute('data-offline', 'false')
+      hc.appendChild(headerElement)
+      this.#header = this.shadowRoot.querySelector('#header')
     }
   })
