@@ -29,6 +29,8 @@
 }
 
 #clocks p {
+  margin-right: 5px;
+  display: inline;
   font-weight: bold;
 }
 

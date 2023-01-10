@@ -15,9 +15,9 @@ template.innerHTML = `
     <div id='title'><h2>Personal Web Desktop</h2></div>
     <div id='connection'>
       <p>Connection: </p>
-      <div class='green hidden'></div>
-      <div class='lime hidden'></div>
-      <div class='red hidden'></div>
+      <div class='green hidden' title='online'></div>
+      <div class='lime hidden' title='online - new message'></div>
+      <div class='red hidden' title='offline'></div>
     </div>
   </div>
 `
@@ -30,11 +30,21 @@ customElements.define('jk224jv-header',
     /**
      * Shortcuts to elements.
      */
+    #clock //         p element displaying local time.
+    #sessionClock //  p element displaying elpased session time.
+    #red //           div element indicating offline mode.
+    #green //         div element indicating online mode.
+    #lime //          div element indicating message.
 
     /**
      * TimeoutId
      */
     #timeoutId
+
+    /**
+     * Contains a Date object created at construction.
+     */
+    #dateStart
 
     /**
      * Create and instance of the element.
@@ -44,6 +54,18 @@ customElements.define('jk224jv-header',
 
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
+
+      // store variables
+      this.#dateStart = new Date()
+
+      // set shortcuts to elements
+      this.#clock = this.shadowRoot.querySelector('#localtime')
+      this.#sessionClock = this.shadowRoot.querySelector('#sessiontime')
+      this.#red = this.shadowRoot.querySelector('.red')
+      this.#green = this.shadowRoot.querySelector('.green')
+      this.#lime = this.shadowRoot.querySelector('.lime')
+
+      this.#timeoutId = window.setTimeout(this.#updateClocks.bind(this), 1000)
     }
 
     /**
@@ -64,16 +86,27 @@ customElements.define('jk224jv-header',
      */
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'data-offline') {
-        //
+        const isTrueSet = (newValue === 'true')
+        this.#updateConnectionDisplay(isTrueSet)
       }
     }
 
     /**
-     * Run once as the component is inserted into the DOM.
+     * Updates the clocks.
      */
-    connectedCallback () {
-      
+    #updateClocks () {
+      this.#clock.textContent = `Time: ${this.#currentLocalTime()}`
+      this.#sessionClock.textContent = `Session time: ${this.#timeElapsed(new Date(), this.#dateStart)}`
+
+      this.#timeoutId = window.setTimeout(this.#updateClocks.bind(this), 1000)
     }
+
+    /**
+     * Update the displayed connectionstatus.
+     *
+     * @param {boolean} status - should contain 'true' or 'false'.
+     */
+    #updateConnectionDisplay (status) {}
 
     /**
      * Create a string containing the localtime in a 24h HH:MM format.
@@ -84,7 +117,7 @@ customElements.define('jk224jv-header',
       const now = new Date()
       const hours = now.getHours()
       const minutes = now.getMinutes()
-      return `${hours}`.padStart(2, '0') + ' : ' + `${minutes}.padStart(2, '0)`
+      return `${hours}`.padStart(2, '0') + ' : ' + `${minutes}`.padStart(2, '0')
     }
 
     /**
