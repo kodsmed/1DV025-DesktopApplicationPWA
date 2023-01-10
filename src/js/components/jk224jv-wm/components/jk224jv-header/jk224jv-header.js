@@ -11,7 +11,14 @@ const template = document.createElement('template')
 template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='container'>
-
+    <div id='clocks'><p id='localtime'></p><p id='sessiontime'></div>
+    <div id='title'><h2>title</h2></div>
+    <div id='connection'>
+      <p>Connection: </p>
+      <div class='green hidden'></div>
+      <div class='lime hidden'></div>
+      <div class='red hidden'></div>
+    </div>
   </div>
 `
 
@@ -23,8 +30,11 @@ customElements.define('jk224jv-header',
     /**
      * Shortcuts to elements.
      */
-    #buttons // div containing the launch buttons
-    #minis // div containing representations of minimized windows.
+
+    /**
+     * TimeoutId
+     */
+    #timeoutId
 
     /**
      * Create and instance of the element.
@@ -62,5 +72,34 @@ customElements.define('jk224jv-header',
      * Run once as the component is inserted into the DOM.
      */
     connectedCallback () {
+    }
+
+    /**
+     * Create a string containing the localtime in a 24h HH:MM format.
+     *
+     * @returns {string} - HH:MM
+     */
+    #currentLocalTime () {
+      const now = new Date()
+      const hours = now.getHours()
+      const minutes = now.getMinutes()
+      return `${hours}`.padStart(2, '0') + ' : ' + `${minutes}.padStart(2, '0)`
+    }
+
+    /**
+     * Create a string containing how much time differ btw two Date objects.
+     *
+     * @param {Date} dateA - a date object.
+     * @param {Date} dateB - a date object.
+     * @returns {string} HH:MM:SS
+     */
+    #timeElapsed (dateA, dateB) {
+      const elapsedms = dateA - dateB
+
+      const seconds = Math.floor((elapsedms / 1000) % 60)
+      const minutes = Math.floor((elapsedms / (1000 * 60)) % 60)
+      const hours = Math.floor((elapsedms / (1000 * 60 * 60)) % 24)
+
+      return `${hours}`.padStart(2, '0') + ' : ' + `${minutes}`.padStart(2, '0') + ' : ' + `${seconds}`.padStart(2, '0')
     }
   })

@@ -13,9 +13,8 @@
                         "dock";
 }
 
-#header {
+#headercontainer {
   grid-area: header;
-  background-color: rgb(5, 5, 146);
 }
 
 #surface {

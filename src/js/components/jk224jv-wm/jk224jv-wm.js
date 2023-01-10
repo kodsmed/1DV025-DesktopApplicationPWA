@@ -7,13 +7,14 @@
  */
 import './components/jk224jv-window'
 import './components/jk224jv-dock'
+import './components/jk224jv-header'
 
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
 const template = document.createElement('template')
 template.innerHTML = `
 <link href="${CSS_URL}" rel="stylesheet" type="text/css">
   <div id='desktop'>
-    <div id='header'> </div>
+    <div id ="headercontainer"></div>
     <div id='surface'>
     </div>
     <div id="dockcontainer">
@@ -36,9 +37,10 @@ customElements.define('jk224jv-wm',
     /**
      * Store variables.
      */
-    #dataConcent //               {Boolean} - data storage concent?
-    #dockElementType //           {String} HTMLElement
-    #windowElementType //         {String} HTMLElement
+    #dataConcent //               {boolean} - data storage concent?
+    #dockElementType //           {string} HTMLElement
+    #windowElementType //         {string} HTMLElement
+    #headerElementType //         {string} HTMLElement
 
     /**
      * Used to verify online-ness.
@@ -88,7 +90,6 @@ customElements.define('jk224jv-wm',
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
       // get elements in the shadowroot
-      this.#header = this.shadowRoot.querySelector('#header')
       this.#surface = this.shadowRoot.querySelector('#surface')
       this.#openWindows = []
       this.#minimizedWindows = []
@@ -98,6 +99,8 @@ customElements.define('jk224jv-wm',
       this.#windowElementType = 'jk224jv-window'
       // change if you want to use anther dock component.
       this.#dockElementType = 'jk224jv-dock'
+      // change if you want to use another header component
+      this.#headerElementType = 'jk224jv-header'
       // Don´t forget imports.
 
       // set listeners
@@ -141,13 +144,24 @@ customElements.define('jk224jv-wm',
     /**
      * Run once as the component is inserted into the DOM.
      */
-    connectedCallback () {
+    async connectedCallback () {
+      // import and attach selected dock
+      await import(`./components/${this.#dockElementType}`)
       const dc = this.shadowRoot.querySelector('#dockcontainer')
       const dockElement = document.createElement(this.#dockElementType)
       dockElement.setAttribute('id', 'dock')
       dockElement.setAttribute('data-offline', 'false')
       dc.appendChild(dockElement)
       this.#dock = this.shadowRoot.querySelector('#dock')
+
+      // import and attach selected header
+      await import(`./components/${this.#headerElementType}`)
+      const hc = this.shadowRoot.querySelector('#headercontainer')
+      const headerElement = document.createElement(this.#headerElementType)
+      headerElement.setAttribute('id', 'header')
+      headerElement.setAttribute('data-offline', 'false')
+      hc.appendChild(headerElement)
+      this.#header = this.shadowRoot.querySelector('#header')
     }
 
     /**
