@@ -348,8 +348,14 @@ customElements.define('jk224jv-wm',
       }
       console.log('heartbeat')
       this.#online = true
-      this.#dock.setAttribute('data-offline', 'false')
-      this.#header.setAttribute('data-offline', 'false')
+
+      // this may run before the components have loaded.
+      if (this.#dock) {
+        this.#dock.setAttribute('data-offline', 'false')
+      }
+      if (this.#header) {
+        this.#header.setAttribute('data-offline', 'false')
+      }
 
       window.clearTimeout(this.#connectionCheckTimeout)
       this.#connectionCheckTimeout = window.setTimeout(this.#checkConnectionTimedOut.bind(this), 50000)
@@ -369,8 +375,13 @@ customElements.define('jk224jv-wm',
       }
       window.clearTimeout(this.#connectionCheckTimeout)
 
-      this.#dock.setAttribute('data-offline', 'true')
-      this.#header.setAttribute('data-offline', 'true')
+      // this may run before the components have loaded.
+      if (this.#dock) {
+        this.#dock.setAttribute('data-offline', 'true')
+      }
+      if (this.#header) {
+        this.#header.setAttribute('data-offline', 'true')
+      }
 
       // try to reconnect in 20s
       this.#connectionCheckTimeout = window.setTimeout(this.#checkConnection.bind(this), 20000, 'wss://courselab.lnu.se/message-app/socket')
