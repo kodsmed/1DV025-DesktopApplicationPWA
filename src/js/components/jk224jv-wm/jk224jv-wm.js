@@ -5,9 +5,6 @@
  * @author Jimmy Karlsson <jk224jv@student.lnu.se>
  * @version 1.0.0
  */
-import './components/jk224jv-window'
-import './components/jk224jv-dock'
-import './components/jk224jv-header'
 
 const CSS_URL = (new URL('./css/style.css', import.meta.url))
 const template = document.createElement('template')
@@ -393,7 +390,7 @@ customElements.define('jk224jv-wm',
      * That is why the unnessesary constants is declared or vite wont see the private fields.
      */
     async #attachComponents () {
-      // import and attach selected dock
+      // import and attach selected dock component
       const dock = `./components/${this.#dockElementType}`
       await import(dock /* @vite-ignore */)
       const dc = this.shadowRoot.querySelector('#dockcontainer')
@@ -403,7 +400,7 @@ customElements.define('jk224jv-wm',
       dc.appendChild(dockElement)
       this.#dock = this.shadowRoot.querySelector('#dock')
 
-      // import and attach selected header
+      // import and attach selected header component
       const header = `./components/${this.#headerElementType}`
       await import(header /* @vite-ignore */)
       const hc = this.shadowRoot.querySelector('#headercontainer')
@@ -412,6 +409,10 @@ customElements.define('jk224jv-wm',
       headerElement.setAttribute('data-offline', 'false')
       hc.appendChild(headerElement)
       this.#header = this.shadowRoot.querySelector('#header')
+
+      // import selected window component
+      const windowcomponent = `./components/${this.#windowElementType}`
+      await import(windowcomponent /* @vite-ignore */)
     }
 
     /**
