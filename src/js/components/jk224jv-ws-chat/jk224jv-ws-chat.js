@@ -77,36 +77,31 @@ customElements.define('jk224jv-ws-chat',
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
 
-      // get elements in the shadowroot
-      this.#display = this.shadowRoot.querySelector('textarea')
-      // set listeners
-      this.#socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
-      this.#socket.addEventListener('open', (event) => {
-        this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
-      })
-      this.#socket.addEventListener('error', (error) => {
-        console.error('WS error:', error.message, 'Closing.')
-        this.#socket.close()
-      })
-      this.#socket.addEventListener('close', () => {
-        this.#display.textContent += '\nws-chat: connection was lost...'
-        this.#reconnect()
-      })
+      // set the private fields
       this.#sendBuffer = []
       this.#reconnectTimeout = 250
+      this.#timeoutId = null
+
+      // get elements in the shadowroot
+      this.#display = this.shadowRoot.querySelector('textarea')
+      this.#tts = this.shadowRoot.querySelector('jk224jv-tts')
+
+      // set up the websocket connection.
+      this.#connectWS()
+
+      // set listeners
       this.addEventListener('inputReceived', (event) => this.#inputHandler(event))
-      this.addEventListener('sttRecieved', (event) => { console.log(`got : ${event.detail}`) })
+      this.addEventListener('sttRecieved', (event) => this.inputHandler(event.detail))
 
       // is username set? If so, retrieve. else, aquire.
       const username = this.#getCookie('username')
+      const input = this.shadowRoot.querySelector('jk224jv-input-dialogue')
       if (username) {
         this.#username = username
-        this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', username)
+        input.setAttribute('message', username)
       } else {
-        this.shadowRoot.querySelector('jk224jv-input-dialogue').setAttribute('message', 'Send me your prefered username')
+        input.setAttribute('message', 'Send me your prefered username')
       }
-
-      this.#tts = this.shadowRoot.querySelector('jk224jv-tts')
     }
 
     /**
@@ -159,6 +154,30 @@ customElements.define('jk224jv-ws-chat',
           }
         this.#sendMessage(data)
       }
+    }
+
+    /**
+     * Connects to the websocketserver.
+     */
+    #connectWS () {
+      this.#socket = new WebSocket('wss://courselab.lnu.se/message-app/socket')
+
+      // once open start listening for messages.
+      this.#socket.addEventListener('open', () => {
+        this.#socket.addEventListener('message', (event) => this.#recieveMessage(event))
+      })
+
+      // if there is an error, log and shut-down.
+      this.#socket.addEventListener('error', (error) => {
+        console.error('WS error:', error.message, 'Closing.')
+        this.#socket.close()
+      })
+
+      // connection lost of shut-down. Log to user and reconnect.
+      this.#socket.addEventListener('close', () => {
+        this.#display.textContent += '\nws-chat: connection was lost...'
+        this.#reconnect()
+      })
     }
 
     /**
