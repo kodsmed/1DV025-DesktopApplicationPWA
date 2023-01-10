@@ -91,7 +91,7 @@ customElements.define('jk224jv-ws-chat',
 
       // set listeners
       this.addEventListener('inputReceived', (event) => this.#inputHandler(event))
-      this.addEventListener('sttRecieved', (event) => this.inputHandler(event.detail))
+      this.addEventListener('sttRecieved', (event) => this.#inputHandler(event))
 
       // is username set? If so, retrieve. else, aquire.
       const username = this.#getCookie('username')
